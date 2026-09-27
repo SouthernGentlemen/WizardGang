@@ -1,17 +1,24 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { validateHistory } from "../scripts/controlled-history.mjs";
-import { readFileSync } from "node:fs";
 
 const body = "Change: yes\nReason: yes\nImpact: yes\nRisk: Low\nControls: yes\nValidation: yes\nEvidence: yes\nSource: yes\nRelease/deployment effect: None.";
 const records = [78, 79, 80].map((n) => ({ sha: `sha${n}`, parents: ["parent"], subject: `[WG-${String(n).padStart(3, "0")}] [BUILD] Deliver task`, body }));
 const plan = "### WG-081 — [BUILD] Current\n### WG-082 — [TEST] Next\n";
+const emptyPlan = `# Implementation plan
+
+## Open tasks
+
+The queue is empty. Select no implementation task.
+
+The next instruction must fill this queue through a controlled, plan-only change before implementation begins. Fetch current \`main\`, inspect open pull requests and reservations, and use the repository's next valid unassigned controlled ID. Keep this file tracked; do not delete it when the queue is empty.
+`;
 
 test("sequential controlled records and active plan pass", () => {
   assert.deepEqual(validateHistory(records, plan), []);
 });
 test("the final task leaves the shared permanent empty queue", () => {
-  assert.deepEqual(validateHistory(records, readFileSync("implementation_plan.md", "utf8")), []);
+  assert.deepEqual(validateHistory(records, emptyPlan), []);
   assert.match(validateHistory(records, null).join(" "), /must remain tracked/);
   assert.match(validateHistory(records, "").join(" "), /shared permanent queue template/);
 });
