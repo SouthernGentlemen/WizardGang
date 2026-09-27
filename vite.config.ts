@@ -100,7 +100,6 @@ function staticSitePlugin(): Plugin {
     resolve(root, "src/app/pageRegistry.ts"),
     resolve(root, "src/data/site.ts"),
     resolve(root, "src/data/solutions.ts"),
-    resolve(root, "src/data/glossary.ts"),
     resolve(root, "src/data/projects.ts"),
     resolve(root, "src/components/ProjectPreviews.tsx"),
     resolve(root, "src/components/ProjectSurfaces.tsx"),
@@ -110,12 +109,9 @@ function staticSitePlugin(): Plugin {
     resolve(root, "src/data/integrations.ts"),
     resolve(root, "src/data/team.ts"),
     resolve(root, "src/components/ProfessionalSurfaces.tsx"),
-    resolve(root, "src/components/IntegrationSurfaces.tsx"),
     resolve(root, "src/pages/Home.tsx"),
     resolve(root, "src/pages/About.tsx"),
-    resolve(root, "src/pages/CompanyNavigation.tsx"),
     resolve(root, "src/pages/Solutions.tsx"),
-    resolve(root, "src/pages/Glossary.tsx"),
     resolve(root, "src/pages/NotFound.tsx"),
     resolve(root, "src/styles/globals.css")
   ];
