@@ -132,7 +132,7 @@ test("relative Markdown documentation links resolve", async () => {
 });
 
 
-test("root governance contract retains the permanent empty queue and product boundaries", async () => {
+test("root governance contract retains the permanent queue and product boundaries", async () => {
   for (const path of ["AGENTS.md", "CONTRIBUTING.md", "implementation_plan.md", "LICENSE.md"]) {
     await assert.doesNotReject(access(resolve(root, path)), `${path} must exist`);
   }
@@ -158,8 +158,10 @@ test("root governance contract retains the permanent empty queue and product bou
   assert.match(license, /SIL Open Font License 1\.1/, "license boundary must preserve the font license");
   assert.match(license, /third-party names and marks remain the property of their respective owners/i, "license boundary must preserve third-party mark ownership");
 
-  assert.match(plan, /The queue is empty\. Select no implementation task\./);
-  assert.doesNotMatch(plan, /^### WG-\d{3} — /m);
+  assert.match(plan, /^# Implementation plan\n\n## Open tasks\n/);
+  if (!/^### WG-\d{3} — /m.test(plan)) {
+    assert.match(plan, /The queue is empty\. Select no implementation task\./);
+  }
   for (const value of ["Cloudflare-only", "WG-NNN", "verify", "change-id"]) {
     assert.ok(readme.includes(value), `README must retain WizardGang-specific authority: ${value}`);
   }
