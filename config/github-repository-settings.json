@@ -2,6 +2,7 @@
   "repository": "Wizard-Gang/WizardGang",
   "defaultBranch": "main",
   "mergeMethods": { "mergeCommit": false, "squash": true, "rebase": false },
+  "allowAutoMerge": true,
   "deleteBranchOnMerge": true,
   "rulesets": {
     "main": {

@@ -167,3 +167,7 @@ npm run deploy:production:dry-run
 ```
 
 Staging can still be published explicitly with `npm run deploy:staging`. Production has no checkout-owned deploy command. Canonical CI waits for the exact immutable GitHub Release, re-verifies that released tag, enters the protected `production` environment, and then deploys that exact state with Wrangler. A deliberate `main` workflow dispatch can recover an existing published release by supplying its tag and exact accepted commit; it cannot create a new Release. CI records Wrangler's structured Worker Version ID, verifies Cloudflare is serving that version at 100% of production traffic, and requires public `version.json` to report the same release and commit. Production deployments serialize rather than cancelling an in-progress deploy.
+
+## GitHub auto-merge
+
+The committed repository settings enable per-PR auto-merge. Enabling this repository capability does not enroll a PR: an authorized contributor chooses auto-merge for that PR. GitHub then waits for required reviews and exact-head checks and uses the repository's squash-only merge policy. Run `npm run verify:github-settings` for a read-only live check; `npm run apply:github-settings` applies the committed authority and independently verifies it.
