@@ -1,17 +1,21 @@
 import type { ReactPageDefinition } from "../app/contracts";
 import { ProjectActions, ProjectArchitecture, ProjectVisualFrame } from "../components/ProjectSurfaces";
-import { projectOutputPath, projectPath, projects, type ProjectRecord } from "../data/projects";
+import { PROJECTS_ROOT, projectOutputPath, projectPath, projects, type ProjectRecord } from "../data/projects";
 
 /* One page per project. The overview and the case study used to be two routes
    restating each other; the home page now carries the preview and the one-liner,
-   so this page only has to carry the substance. */
+   so this page only has to carry the substance. The actions sit in the hero as
+   well as after the result, so a phone reaches the live application without
+   scrolling the whole account first. */
 function caseStudyBody(project: ProjectRecord) {
   return (
     <main className="site-main" id="main" tabIndex={-1}>
-      <section className="page-hero">
+      <section className="page-hero case-hero">
+        <a className="back-link" href={PROJECTS_ROOT}><span aria-hidden="true">←</span> Projects</a>
         <p className="kicker">{project.number} / {project.eyebrow}</p>
         <h1>{project.name}</h1>
         <p>{project.narrative.tagline}</p>
+        <ProjectActions project={project} />
       </section>
 
       <ProjectVisualFrame project={project} />
@@ -59,7 +63,7 @@ function caseStudyBody(project: ProjectRecord) {
         <div className="case-label">Result</div>
         <div>
           <p>{project.result}</p>
-          <ProjectActions project={project} surface="detail" />
+          <ProjectActions project={project} />
         </div>
       </section>
     </main>

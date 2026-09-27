@@ -1,11 +1,16 @@
 /*
  * WizardGang presentation tokens.
  *
- * One palette, one type scale, one spacing scale. Every other rule in the
- * stylesheet derives from these; page-specific files must not invent a second
- * scale. Token names that the product-preview CSS already reads (--panel,
- * --line, --acid, --violet, --cyan, --paper, --muted, --quiet) keep their names
- * so those recreations stay intact while the values move.
+ * One palette, one type scale, one spacing scale, one radius scale. Every rule
+ * in globals.css derives from these; a page must not invent a second scale.
+ *
+ * The palette is a zinc ramp with a single accent. The accent is the lime of
+ * the wordmark; the violet square in the mark is brand, not interface, so no
+ * control or link uses it. The light preference re-points these same names in
+ * globals.css rather than declaring a second vocabulary.
+ *
+ * One interface face. JetBrains Mono is kept for machine values only — the
+ * build identifier and the product recreations — not for labels or chrome.
  *
  * Self-hosted because the production CSP is `default-src 'none'` with
  * `font-src 'self'`: a font served from another origin is silently dead.
@@ -31,66 +36,81 @@
 :root {
   color-scheme: dark;
 
-  /* Surfaces. Four steps that are actually distinguishable, on a cool base. */
-  --ink: #0a0a0f;
-  --surface-1: #101017;
-  --surface-2: #16161f;
-  --surface-3: #1e1e2a;
-  --panel: var(--surface-1);
-  --panel-2: var(--surface-2);
+  /* Surfaces: page, card, raised panel, pressed. Opaque, so a panel that
+     floats over content never lets the content show through. */
+  --ink: #09090b;
+  --surface-1: #111114;
+  --surface-2: #18181b;
+  --surface-3: #27272a;
 
-  /* Text. Three real levels; --muted and --quiet were previously identical. */
-  --paper: #f2f2f6;
-  --muted: #a3a3b2;
-  --quiet: #6e6e7e;
+  /* Text: three levels, each at least 4.5:1 on every surface above. */
+  --paper: #fafafa;
+  --muted: #a1a1aa;
+  --quiet: #8e8e98;
 
-  /* Lines sit on the surface instead of cutting across it. */
-  --line: rgb(255 255 255 / 11%);
+  /* Hairlines sit on the surface instead of cutting across it; washes tint
+     chips and hovered controls without changing their surface. */
+  --line: rgb(255 255 255 / 10%);
   --line-soft: rgb(255 255 255 / 6%);
-  --line-strong: rgb(255 255 255 / 22%);
+  --line-strong: rgb(255 255 255 / 20%);
+  --wash: rgb(255 255 255 / 4%);
+  --wash-strong: rgb(255 255 255 / 8%);
 
-  --acid: #ccff2e;
-  --violet: #a98bff;
-  --cyan: #6fe3ff;
-  --focus: #6fe3ff;
-  --button-text: #0a0a0f;
+  /* The one accent, and the text that sits on it. */
+  --brand: #ccff2e;
+  --brand-hover: #dcff6b;
+  --on-brand: #09090b;
+  --focus: #ccff2e;
+
+  /* The two squares of the wordmark. Decorative only. */
+  --mark-a: #ccff2e;
+  --mark-b: #a98bff;
+
+  /* Page atmosphere: a faint grid and glow behind the top of every page. */
+  --grid-line: rgb(255 255 255 / 4.5%);
+  --glow: rgb(204 255 46 / 7%);
+  --shadow-panel: 0 16px 48px -12px rgb(0 0 0 / 70%);
+  --header-bg: rgb(9 9 11 / 78%);
 
   --font-sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* Type scale. The previous h1 topped out at 8.8rem (141px) with .86 leading;
-     nothing on the page could out-rank it, so nothing led. */
+  /* Type scale. Four heading steps; every heading resolves to one of them. */
   --text-micro: .75rem;
   --text-small: .875rem;
-  --text-body: 1.0625rem;
-  --text-lede: clamp(1.125rem, 1.4vw, 1.3125rem);
-  --text-h3: clamp(1.25rem, 1.8vw, 1.5rem);
-  --text-h2: clamp(1.75rem, 3vw, 2.5rem);
-  --text-h1: clamp(2.125rem, 4.4vw, 3.5rem);
-  --text-display: clamp(2.5rem, 6.2vw, 4.75rem);
+  --text-body: 1rem;
+  --text-lede: clamp(1.0625rem, .98rem + .45vw, 1.25rem);
+  --text-h3: clamp(1.0625rem, 1rem + .3vw, 1.25rem);
+  --text-h2: clamp(1.625rem, 1.25rem + 1.6vw, 2.25rem);
+  --text-h1: clamp(2rem, 1.45rem + 2.4vw, 3rem);
+  --text-display: clamp(2.5rem, 1.7rem + 3.6vw, 4rem);
 
-  --leading-display: .98;
-  --leading-heading: 1.12;
-  --leading-body: 1.6;
-  --tracking-display: -.035em;
-  --tracking-heading: -.02em;
-  --tracking-label: .08em;
+  --leading-display: 1.04;
+  --leading-heading: 1.15;
+  --leading-body: 1.65;
+  --tracking-display: -.04em;
+  --tracking-heading: -.025em;
 
-  --space-1: .5rem;
-  --space-2: .75rem;
-  --space-3: 1rem;
-  --space-4: 1.5rem;
-  --space-5: 2rem;
-  --space-6: 3rem;
-  --space-7: 4.5rem;
-  --space-8: 6.5rem;
-  --section-y: clamp(4rem, 8vw, 7rem);
+  /* Spacing: a 4px-based ramp. */
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --section-y: clamp(3.5rem, 2.25rem + 4.5vw, 6rem);
 
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
+  --radius-sm: .375rem;
+  --radius-md: .5rem;
+  --radius-lg: .75rem;
+  --radius-xl: 1rem;
+  --radius-xxl: 1.5rem;
 
-  --shell: 1200px;
-  --gutter: clamp(20px, 4vw, 40px);
-  --measure: 62ch;
+  /* Layout. The gutter grows from 16px on a phone to 32px on a desktop. */
+  --shell: 80rem;
+  --gutter: clamp(1rem, .55rem + 2.2vw, 2rem);
+  --header-h: 4rem;
+  --measure: 68ch;
 }
