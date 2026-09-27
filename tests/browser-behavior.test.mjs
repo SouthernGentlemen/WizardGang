@@ -161,6 +161,9 @@ test("language translation preserves exact and dynamic current behavior", () => 
   assert.equal(translateDynamic("Play SharkTank"), "Jugar a SharkTank");
   assert.equal(translateDynamic("Read the Hexframe case study"), "Leer el caso de estudio de Hexframe");
   assert.equal(translateDynamic("Visit WizardGang on GitHub"), "Visitar WizardGang en GitHub");
+  // An exact entry wins over a pattern that would also match it.
+  assert.equal(translateDynamic("Play previews"), "Reproducir vistas previas");
+  assert.equal(translateDynamic("404 / Route not found"), "404 / Ruta no encontrada");
   assert.equal(translateText("  Projects  ", "es"), "  Proyectos  ");
   assert.equal(translateText("Projects", "en"), "Projects");
   assert.equal(translateText(null, "es"), null);

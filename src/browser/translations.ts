@@ -123,13 +123,16 @@ const DYNAMIC_TRANSLATIONS: ReadonlyArray<readonly [RegExp, TranslationReplaceme
 ];
 
 export function translateDynamic(value: string): string {
+  // An exact entry wins; the patterns cover only strings no entry names.
+  const exact = SPANISH_TRANSLATIONS.get(value);
+  if (exact) return exact;
   for (const [pattern, replacement] of DYNAMIC_TRANSLATIONS) {
     if (!pattern.test(value)) continue;
     return typeof replacement === "string"
       ? value.replace(pattern, replacement)
       : value.replace(pattern, (...match) => replacement(...match.map(String)));
   }
-  return SPANISH_TRANSLATIONS.get(value) || value;
+  return value;
 }
 
 export function translateText(value: string | null, locale: LanguagePreference): string | null {
