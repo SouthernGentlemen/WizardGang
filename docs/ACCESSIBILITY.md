@@ -39,7 +39,7 @@ Known areas for continued content/accessibility improvement include:
 
 - completing Spanish translation and explicit language marking for remaining technical names;
 - defining unusual technical terms in place, now that the separate glossary page is retired;
-- providing simpler alternatives for the denser passages on the work page; and
+- providing simpler alternatives for the denser technical passages; and
 - adding pronunciation help when a name or term cannot reasonably be inferred from spelling.
 
 ## Reporting
