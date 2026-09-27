@@ -508,6 +508,7 @@ test("React frontend toolchain owns the shared production shell without becoming
     "src/pages/Contact.tsx",
     "src/pages/Glossary.tsx",
     "src/pages/CompanyNavigation.tsx",
+    "src/components/IntegrationSurfaces.tsx",
     "src/data/glossary.ts",
     "public/sitemap.xml"
   ]) {

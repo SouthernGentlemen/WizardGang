@@ -1,6 +1,6 @@
 # WizardGang accessibility
 
-Scope: canonical pages served from `wizardgang.ai`, including shared navigation, display preferences, project previews, site content, and Glossary. Detailed architecture/assurance evidence is owned by [`demo.wizardgang.ai/assurance`](https://demo.wizardgang.ai/assurance).
+Scope: canonical pages served from `wizardgang.ai`, including shared navigation, display preferences, project previews, and site content. Detailed architecture/assurance evidence is owned by [`demo.wizardgang.ai/assurance`](https://demo.wizardgang.ai/assurance).
 
 Target: WCAG 2.2 Level AA for scoped content. This is a design and testing target, not an accessibility certification or blanket conformance claim.
 
