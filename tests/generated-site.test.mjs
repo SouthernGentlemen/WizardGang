@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import test from "node:test";
+import { deployments } from "../src/data/professional-systems.ts";
 import { projects } from "../src/data/projects.ts";
 import { sanitizeLocalHeadersText } from "../scripts/dev.mjs";
 import { PERMANENT_REDIRECTS } from "../src/worker/index.ts";
@@ -378,6 +379,31 @@ test("Solutions projects the professional evidence authorities", async () => {
   }
   const wall = tagBlocks(solutions, "li").filter(({ inner }) => inner.includes("href=\"https://"));
   assert.ok(wall.length >= 20, "the deployment wall must list every organization");
+});
+
+test("the deployment record carries the owner's corrections and reads by organization", async () => {
+  // Waytek Wire was Fastfetch order fulfillment, not CIMS; "Wanted" was never a deployment.
+  assert.deepEqual(deployments.find(({ name }) => name === "Waytek Wire"), {
+    name: "Waytek Wire",
+    url: "https://www.waytekwire.com/",
+    solution: "Order Fulfillment System",
+    employer: "Fastfetch Corporation"
+  });
+  assert.equal(deployments.some(({ name }) => /^wanted$/i.test(name)), false, "Wanted is not a deployment");
+
+  // By employer, then alphabetically by name within each.
+  const employers = ["Supply Chain Technologies", "Spartan Technology Solutions", "Fastfetch Corporation"];
+  const byName = (a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" });
+  const ordered = employers.flatMap((employer) => deployments.filter((deployment) => deployment.employer === employer).sort(byName));
+  assert.deepEqual(deployments.map(({ name }) => name), ordered.map(({ name }) => name), "deployments must read by employer, then by name");
+
+  const solutions = await readDist("solutions/index.html");
+  const wall = tagBlocks(solutions, "ul").find(({ attrs }) => attrs.get("class") === "deployment-wall");
+  assert.deepEqual(
+    tagBlocks(wall.inner, "li").map(({ inner }) => textContent(inner)),
+    deployments.map(({ name, solution, employer }) => `${name} ↗ ${solution} ${employer}`),
+    "Solutions must list every deployment, with its solution and employer, in record order"
+  );
 });
 
 test("Capabilities leads Solutions and links to every architecture demonstration", async () => {
