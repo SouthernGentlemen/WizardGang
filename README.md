@@ -1,9 +1,9 @@
 # WizardGang
 
-[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. The home page scans in one pass — industries, integrations, projects — and every row opens in place.
+[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. The home page leads with the software — projects, then industries and integrations — and every project opens in place.
 
 ```text
-/                        selected industries, integrations and projects
+/                        selected projects, industries and integrations
 /solutions/              capabilities, then the professional record
 /projects/               project index
 /projects/sharktank/     case study
@@ -38,14 +38,14 @@ The TypeScript Worker owns runtime routing that cannot be expressed as static as
 
 Two authored stylesheets, one job each:
 
-- `src/styles/tokens.css` — the design system: one palette, one type scale, one spacing scale, and the self-hosted faces. It may declare only `:root` custom properties and `@font-face`, which the acceptance gate enforces.
-- `src/styles/globals.css` — every rule, consuming those tokens.
+- `src/styles/tokens.css` — the design system: one zinc palette with a single lime accent, one type scale, one spacing scale, one radius scale, and the self-hosted faces. It may declare only `:root` custom properties and `@font-face`, which the acceptance gate enforces. The light preference re-points the same token names.
+- `src/styles/globals.css` — every rule, consuming those tokens. It is mobile first: rules outside a query are the phone layout, and `min-width` queries at 40, 48, 64 and 80rem add columns. Product previews are size containers, so each recreation adapts to its frame rather than the viewport.
 
-Every heading resolves to one of four scale tokens, so a page cannot invent its own display size. Instrument Sans and JetBrains Mono ship from `public/fonts/` as latin-subset variable WOFF2 under the SIL Open Font License; the production policy is `default-src 'none'` with `font-src 'self'`, so a font from another origin would not load.
+Every heading resolves to one of four scale tokens, so a page cannot invent its own display size. Instrument Sans is the one interface face; JetBrains Mono is kept for machine values — the build identifier and the product recreations. Both ship from `public/fonts/` as latin-subset variable WOFF2 under the SIL Open Font License; the production policy is `default-src 'none'` with `font-src 'self'`, so a font from another origin would not load.
 
 ## Content ownership
 
-- Home — industry and integration categories are visible in responsive grids; projects remain expandable rows because each row carries a preview. Project previews start closed and animate only while open.
+- Home — the projects lead as expandable cards because each carries a preview; industry and integration categories follow in responsive grids. Project previews start closed and animate only while open.
 - Solutions — Capabilities first: each working example links to its architecture demo, with a link to the full demo workbench. The professional record follows in three sections, projected from `src/data/professional-systems.ts`, with every deployment carrying what was delivered and the employer it was delivered under.
 - Projects — an index of the work, then one case study per project: problem, what was built, architecture, approach, result.
 - About — the argument for the practice, the person, and the career record.

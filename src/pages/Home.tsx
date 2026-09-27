@@ -1,24 +1,27 @@
 import type { ReactPageDefinition } from "../app/contracts";
 import { WorkRow } from "../components/ProjectSurfaces";
 import { PROJECTS_ROOT, projects } from "../data/projects";
-import { DEMO_FRAMEWORK_URL } from "../data/site";
-import { SOLUTIONS_PATH } from "../data/solutions-menu";
+import { DEMO_FRAMEWORK_URL, GITHUB_ORG_URL } from "../data/site";
+import { SOLUTIONS_PATH, SOLUTION_SECTIONS } from "../data/solutions-menu";
 import {
   professionalIntegrationEvidence,
   professionalSystemEvidence
 } from "../data/professional-systems";
 
-/* Professional categories stay visible on the home page. Project rows remain
-   disclosures because each holds a motion-controlled preview. */
+/* Software first: the projects lead, because they are the evidence the hero
+   promises. Professional categories follow, visible without a click. Project
+   rows remain disclosures because each holds a motion-controlled preview. */
 
 function SectionHead({ id, label, blurb, href, hrefLabel }: {
-  id: string; label: string; blurb: string; href: string; hrefLabel: string;
+  id: string; label: string; blurb: string; href?: string; hrefLabel?: string;
 }) {
   return (
     <div className="section-head">
       <h2 className="section-label" id={id}>{label}</h2>
       <p className="section-blurb">{blurb}</p>
-      <a className="section-more" href={href}>{hrefLabel} <span aria-hidden="true">→</span></a>
+      {href && hrefLabel ? (
+        <a className="section-more" href={href}>{hrefLabel} <span aria-hidden="true">→</span></a>
+      ) : null}
     </div>
   );
 }
@@ -40,10 +43,31 @@ export const HOME_PAGE: ReactPageDefinition = {
           each project was built, and open the live applications where available &mdash; so you can
           check the work before you pay for it, and keep what is built for you.
         </p>
+        <div className="hero-actions">
+          <a className="button button-primary" href="#home-projects-heading">
+            Browse the projects <span aria-hidden="true">↓</span>
+          </a>
+          <a className="button" href={GITHUB_ORG_URL}>
+            Source on GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </section>
+
+      <section className="work" aria-labelledby="home-projects-heading">
+        <SectionHead
+          id="home-projects-heading"
+          label="Selected projects"
+          blurb="Open-source software WizardGang builds and operates."
+          href={PROJECTS_ROOT}
+          hrefLabel="All projects"
+        />
+        <div className="work-list">
+          {projects.map((project) => <WorkRow key={project.id} project={project} />)}
+        </div>
       </section>
 
       <section className="work" aria-labelledby="home-industries-heading">
-        <h2 className="section-label" id="home-industries-heading">Industries</h2>
+        <SectionHead id="home-industries-heading" label="Industries" blurb={SOLUTION_SECTIONS[0].lede} />
         <ul className="home-topic-grid home-topic-grid-industries">
           {professionalSystemEvidence.map((group) => (
             <li className="home-topic" key={group.title}>
@@ -57,7 +81,7 @@ export const HOME_PAGE: ReactPageDefinition = {
       </section>
 
       <section className="work" aria-labelledby="home-integrations-heading">
-        <h2 className="section-label" id="home-integrations-heading">Integrations</h2>
+        <SectionHead id="home-integrations-heading" label="Integrations" blurb={SOLUTION_SECTIONS[1].lede} />
         <ul className="home-topic-grid home-topic-grid-integrations">
           {professionalIntegrationEvidence.map((group) => (
             <li className="home-topic" key={group.title}>
@@ -70,17 +94,6 @@ export const HOME_PAGE: ReactPageDefinition = {
         </ul>
       </section>
 
-      <section className="work" aria-labelledby="home-projects-heading">
-        <SectionHead
-          id="home-projects-heading"
-          label="Selected projects"
-          blurb="Open-source software WizardGang builds and operates."
-          href={PROJECTS_ROOT}
-          hrefLabel="All projects"
-        />
-        {projects.map((project) => <WorkRow key={project.id} project={project} />)}
-      </section>
-
       <section className="home-outro" aria-labelledby="home-architecture-heading">
         <h2 className="section-label" id="home-architecture-heading">Go deeper</h2>
         <p className="section-blurb">
@@ -88,10 +101,10 @@ export const HOME_PAGE: ReactPageDefinition = {
           beside them.
         </p>
         <div className="outro-actions">
-          <a className="outro-mail" href={DEMO_FRAMEWORK_URL}>
+          <a className="button button-primary" href={DEMO_FRAMEWORK_URL}>
             Explore the Architecture <span aria-hidden="true">↗</span>
           </a>
-          <a className="work-link" href={SOLUTIONS_PATH}>
+          <a className="button" href={SOLUTIONS_PATH}>
             See the full record <span aria-hidden="true">→</span>
           </a>
         </div>

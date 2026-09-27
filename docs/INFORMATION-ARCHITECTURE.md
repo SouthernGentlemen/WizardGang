@@ -30,7 +30,7 @@ Each concept has one public owner:
 
 | Concept | Authority | Typed source |
 | --- | --- | --- |
-| selected industries, integrations and projects, as scannable lists | `/` | `src/data/projects.ts`, `src/data/professional-systems.ts` |
+| selected projects, industries and integrations, as scannable lists | `/` | `src/data/projects.ts`, `src/data/professional-systems.ts` |
 | all projects, as an index | `/projects/` | `src/data/projects.ts` |
 | one project's problem, build, architecture, approach, result | `/projects/<slug>/` | `src/data/projects.ts` |
 | what WizardGang can demonstrate running | `/solutions/#capabilities` | `src/data/capabilities.ts` |
@@ -48,7 +48,7 @@ The three sections after it are Jacob Yongue's employment record — the domains
 
 ### Motion
 
-Industry and integration categories are visible in responsive grids on the home page. Projects remain expandable rows because each row carries a preview worth opening on its own. Nothing animated is open on load. A preview animates only while its panel is open, and the project rows share a `name`, so at most one preview runs at a time. `src/styles/globals.css` pauses `.project-visual *` unconditionally and resumes it only inside `details[open]` or a case study's `.case-visual`, with the preview toggle still respected.
+Projects lead the home page as expandable cards, because each carries a preview worth opening on its own; industry and integration categories follow in responsive grids. Nothing animated is open on load. A preview animates only while its panel is open, and the project rows share a `name`, so at most one preview runs at a time. `src/styles/globals.css` pauses `.project-visual *` unconditionally and resumes it only inside `details[open]` or a case study's `.case-visual`, with the preview toggle still respected.
 
 ## Typed authorities
 
@@ -67,14 +67,16 @@ Pages project these authorities. They do not create parallel catalogs.
 
 Two authored stylesheets, with one job each:
 
-- `src/styles/tokens.css` — the design system. One palette with a four-step surface ladder and a three-level text ramp, one type scale, one spacing scale, and the self-hosted faces. It may declare only `:root` custom properties and `@font-face`, which `npm run check` enforces, so it cannot become a second place where presentation is decided.
+- `src/styles/tokens.css` — the design system. One zinc palette with a four-step surface ladder, a three-level text ramp and a single accent, one type scale, one spacing scale, one radius scale, and the self-hosted faces. The light preference re-points the same names. It may declare only `:root` custom properties and `@font-face`, which `npm run check` enforces, so it cannot become a second place where presentation is decided.
 - `src/styles/globals.css` — every rule, consuming those tokens.
 
-Headings resolve to one of four scale tokens. A page that wants a different size changes the scale, not the page.
+The stylesheet is mobile first. Rules outside a query are the phone layout; `min-width` queries at 40, 48, 64 and 80rem add columns, and the inline navigation replaces the menu button from 48rem. Product previews are size containers, so a recreation inside a phone card and one leading a desktop case study each adapt to the width they are given.
 
-At 200% text the root doubles, so every rem doubles with it: an 11rem grid track becomes 22rem and a 17rem card minimum becomes 34rem. Multi-column grids therefore collapse to one column, label/action rows stack, and the two overlay panels flow in place instead of floating off a header that is now much taller. Every page must report zero horizontal overflow at that size.
+Headings resolve to one of four scale tokens. A page that wants a different size changes the scale, not the page. One vocabulary serves every page: one card surface, one chip, one button, one text link.
 
-Instrument Sans and JetBrains Mono ship from `public/fonts/` as latin-subset variable WOFF2 under the SIL Open Font License. The production policy is `default-src 'none'` with `font-src 'self'`, so a font served from another origin would not load at all.
+At 200% text the root doubles, so every rem doubles with it: a 12rem label column becomes 24rem. Explicit multi-column layouts therefore collapse to one column, the primary navigation uses the compact menu at every width, the preferences panel spans the header instead of hanging off the gear, and a long word may break rather than push the page sideways. Every page must report zero horizontal overflow at that size.
+
+Instrument Sans is the one interface face; JetBrains Mono is kept for machine values — the build identifier and the product recreations. Both ship from `public/fonts/` as latin-subset variable WOFF2 under the SIL Open Font License. The production policy is `default-src 'none'` with `font-src 'self'`, so a font served from another origin would not load at all.
 
 ## Route policy
 

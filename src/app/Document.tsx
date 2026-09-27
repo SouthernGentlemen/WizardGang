@@ -18,7 +18,7 @@ function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadat
     <head>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width,initial-scale=1" />
-      <meta name="theme-color" content="#0a0a0f" />
+      <meta name="theme-color" content="#09090b" />
       <title>{metadata.title}</title>
       <meta name="description" content={metadata.description} />
       {metadata.noIndex ? (

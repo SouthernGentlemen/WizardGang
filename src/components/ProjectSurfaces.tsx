@@ -1,6 +1,5 @@
 import {
   projectActionsFor,
-  type ProjectActionSurface,
   type ProjectArchitectureItem,
   type ProjectRecord
 } from "../data/projects";
@@ -10,14 +9,14 @@ function Arrow({ external }: { external: boolean }) {
   return <span aria-hidden="true">{external ? "↗" : "→"}</span>;
 }
 
-export function ProjectActions({ project, surface }: { project: ProjectRecord; surface: ProjectActionSurface }) {
-  const actions = projectActionsFor(project, surface);
-  const compact = surface === "card";
+/* A case study's outbound actions: the live application first where one
+   exists, then evidence, then source. */
+export function ProjectActions({ project }: { project: ProjectRecord }) {
   return (
-    <div className={compact ? "project-card-actions" : "button-row"}>
-      {actions.map((action) => (
+    <div className="button-row">
+      {projectActionsFor(project, "detail").map((action) => (
         <a
-          className={compact ? "text-link" : `button${action.primary ? " button-primary" : ""}`}
+          className={`button${action.primary ? " button-primary" : ""}`}
           data-project-action={action.id}
           data-primary={action.primary ? "true" : undefined}
           href={action.href}
@@ -55,9 +54,10 @@ export function ProjectVisualFrame({ project }: { project: ProjectRecord }) {
   );
 }
 
-/* The homepage work list. Each entry is a disclosure: the caption is the control,
-   and the preview lives inside the panel so nothing animates until a visitor asks
-   for it. `name` makes the set exclusive, so at most one preview ever runs. */
+/* The homepage work list. Each entry is a disclosure: the card header is the
+   control, and the preview lives inside the panel so nothing animates until a
+   visitor asks for it. `name` makes the set exclusive, so at most one preview
+   ever runs. */
 export function WorkRow({ project }: { project: ProjectRecord }) {
   const actions = projectActionsFor(project, "card");
   const detail = actions.find((candidate) => candidate.id === "project");
@@ -93,12 +93,12 @@ export function WorkRow({ project }: { project: ProjectRecord }) {
         ) : null}
         <div className="work-actions">
           {detail ? (
-            <a className="work-link" href={detail.href} aria-label={detail.ariaLabel} data-project-action={detail.id}>
+            <a className="button button-primary" href={detail.href} aria-label={detail.ariaLabel} data-project-action={detail.id}>
               {detail.label} <span aria-hidden="true">→</span>
             </a>
           ) : null}
           {live ? (
-            <a className="work-link work-link-demo" href={live.href} aria-label={live.ariaLabel} data-project-action={live.id}>
+            <a className="button" href={live.href} aria-label={live.ariaLabel} data-project-action={live.id}>
               {live.label} <span aria-hidden="true">↗</span>
             </a>
           ) : null}

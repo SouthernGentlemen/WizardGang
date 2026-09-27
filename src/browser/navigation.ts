@@ -56,10 +56,12 @@ export function initializeNavigation(
     toggle.focus();
   });
 
+  // The same 48rem boundary where the stylesheet swaps the menu button for
+  // inline navigation: crossing it closes the phone menu.
   if (matchMediaFn) {
-    const mobileNavigation = matchMediaFn("(max-width: 760px)");
-    mobileNavigation.addEventListener?.("change", (event) => {
-      if (!event.matches) setNavigationOpen(toggle, mobileNav, false);
+    const inlineNavigation = matchMediaFn("(min-width: 48rem)");
+    inlineNavigation.addEventListener?.("change", (event) => {
+      if (event.matches) setNavigationOpen(toggle, mobileNav, false);
     });
   }
 

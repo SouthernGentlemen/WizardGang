@@ -1,9 +1,6 @@
 import type { BuildMetadata, CurrentNavSection } from "../app/contracts";
 import { NAVIGATION_ITEMS } from "../app/navigation";
-
-const GITHUB = "https://github.com/Wizard-Gang";
-const LINKEDIN = "https://www.linkedin.com/in/jacob-yongue";
-const CONTACT_EMAIL = "jacob@wizardgang.ai";
+import { CONTACT_EMAIL, GITHUB_ORG_URL, LINKEDIN_URL } from "../data/site";
 
 interface NavigationProps {
   current: CurrentNavSection;
@@ -47,29 +44,36 @@ export function Navigation({ current, mobile = false, id }: NavigationProps) {
   );
 }
 
+/* One bar: wordmark, the inline navigation (from 48rem), then the gear and the
+   phone menu button. The bar is a wrapper so the header itself can span the
+   viewport while its contents keep the page width. */
 export function SiteHeader({ current }: { current: CurrentNavSection }) {
   return (
     <>
       <a className="skip-link" href="#main">Skip to main content</a>
       <header className="site-header">
-        <a className="wordmark" href="/" aria-label="WizardGang home">
-          <span className="wordmark-mark" aria-hidden="true"></span>
-          <span className="wordmark-copy"><strong>WIZARDGANG</strong><small>Jacob Yongue</small></span>
-        </a>
-        <Navigation current={current} />
-        <Preferences />
-        <div className="nav-disclosure">
-          <button
-            className="nav-toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls={MOBILE_NAVIGATION_ID}
-            hidden
-          >
-            <span>Menu</span>
-            <span className="nav-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span>
-          </button>
-          <Navigation current={current} mobile id={MOBILE_NAVIGATION_ID} />
+        <div className="site-header-bar">
+          <a className="wordmark" href="/" aria-label="WizardGang home">
+            <span className="wordmark-mark" aria-hidden="true"></span>
+            <span className="wordmark-copy"><strong>WizardGang</strong><small>Jacob Yongue</small></span>
+          </a>
+          <Navigation current={current} />
+          <div className="site-header-actions">
+            <Preferences />
+            <div className="nav-disclosure">
+              <button
+                className="nav-toggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls={MOBILE_NAVIGATION_ID}
+                hidden
+              >
+                <span className="sr-only">Menu</span>
+                <span className="nav-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+              </button>
+              <Navigation current={current} mobile id={MOBILE_NAVIGATION_ID} />
+            </div>
+          </div>
         </div>
       </header>
     </>
@@ -98,12 +102,16 @@ export function Preferences() {
         </label>
         <fieldset className="setting-theme">
           <legend>Theme</legend>
-          <label><input type="radio" name="page-theme" id="theme-dark" defaultChecked /> Dark</label>
-          <label><input type="radio" name="page-theme" id="theme-light" /> Light</label>
+          <div className="setting-segments">
+            <label><input type="radio" name="page-theme" id="theme-dark" defaultChecked /> Dark</label>
+            <label><input type="radio" name="page-theme" id="theme-light" /> Light</label>
+          </div>
         </fieldset>
-        <label className="setting-toggle"><input type="checkbox" id="reading-layout" defaultChecked /><span>Readable layout</span></label>
-        <label className="setting-toggle"><input type="checkbox" id="text-size-200" /><span>200% text</span></label>
-        <label className="setting-toggle"><input type="checkbox" id="play-previews" aria-describedby="motion-setting-help" defaultChecked /><span>Play previews</span></label>
+        <div className="setting-switches">
+          <label className="setting-toggle"><input type="checkbox" id="reading-layout" defaultChecked /><span>Readable layout</span></label>
+          <label className="setting-toggle"><input type="checkbox" id="text-size-200" /><span>200% text</span></label>
+          <label className="setting-toggle"><input type="checkbox" id="play-previews" aria-describedby="motion-setting-help" defaultChecked /><span>Play previews</span></label>
+        </div>
         <small className="sr-only" id="motion-setting-help">Previews play by default. Turn this off to pause them; reduced-motion preferences are always respected.</small>
       </section>
     </details>
@@ -114,13 +122,13 @@ export function SiteFooter({ build }: { build: BuildMetadata }) {
   const buildLabel = build.commit === "development" ? build.commit : build.commit.slice(0, 12);
   return (
     <footer className="site-footer">
-      <span>WizardGang · Software, systems &amp; integrations</span>
-      <span className="footer-contact">
+      <p className="footer-brand"><span className="wordmark-mark" aria-hidden="true"></span>WizardGang · Software, systems &amp; integrations</p>
+      <p className="footer-contact">
         <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-        <a href={LINKEDIN}>LinkedIn <span aria-hidden="true">↗</span></a>
-        <a href={GITHUB} aria-label="Visit WizardGang on GitHub">GitHub <span aria-hidden="true">↗</span></a>
-      </span>
-      <span>WizardGang.ai · <a href="/version.json">Build {buildLabel}</a></span>
+        <a href={LINKEDIN_URL}>LinkedIn <span aria-hidden="true">↗</span></a>
+        <a href={GITHUB_ORG_URL} aria-label="Visit WizardGang on GitHub">GitHub <span aria-hidden="true">↗</span></a>
+      </p>
+      <p className="footer-build">WizardGang.ai · <a href="/version.json">Build <span className="footer-hash">{buildLabel}</span></a></p>
     </footer>
   );
 }

@@ -34,8 +34,8 @@ export const SOLUTIONS_PAGE: ReactPageDefinition = {
       <section className="page-hero">
         <h1>Solutions</h1>
         <p>
-          Software for the parts of a business that cannot stop: warehouses, courtrooms, and the
-          systems feeding them. Below is what it does, what it connects to, and where it runs.
+          Solutions built for the operations that cannot stop: warehouses, courtrooms, and the
+          systems that feed them.
         </p>
       </section>
 
