@@ -2,23 +2,6 @@
 
 ## Open tasks
 
-### WG-113 — [SEC] Remediate the high-severity undici advisory
-
-**Goal**
-
-Restore a clean live dependency advisory result before the shared policy update.
-
-**Scope**
-
-- Update the pinned Wrangler toolchain and lockfile to a version that resolves the high-severity `undici` finding.
-- Keep the site's runtime, release, and deployment boundaries unchanged.
-- Validate the resulting dependency graph, canonical repository checks, and Wrangler build and dry-run contracts.
-
-**Acceptance**
-
-- `npm run audit:dependencies` reports no high or critical advisories.
-- Required exact-head and post-merge CI pass; the completed branch is deleted.
-
 ### WG-114 — [DOCS] Clarify connected GitHub delivery guidance
 
 **Goal**
