@@ -11,7 +11,7 @@
   "allowScripts": {
     "esbuild@0.28.1": true,
     "fsevents@2.3.3": true,
-    "workerd@1.20260925.1": true
+    "workerd@1.20260926.1": true
   },
   "description": "Static company site for WizardGang at wizardgang.ai.",
   "scripts": {
@@ -61,6 +61,6 @@
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
     "vite": "8.3.1",
-    "wrangler": "4.141.0"
+    "wrangler": "4.144.0"
   }
 }
