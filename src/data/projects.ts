@@ -1,4 +1,4 @@
-export type ProjectSlug = "sharktank" | "hexframe" | "yarreader";
+export type ProjectSlug = "hexframe" | "yarreader";
 export type ProjectId = ProjectSlug;
 export type ProjectArchitectureItem = readonly [name: string, detail: string];
 export type ProjectPreviewKind = "motion-controlled" | "static";
@@ -69,51 +69,10 @@ export interface ProjectRecord {
 
 export const projects = [
   {
-    id: "sharktank",
-    slug: "sharktank",
-    name: "SharkTank",
-    number: "01",
-    eyebrow: "AI-developed multiplayer game",
-    summary: "A live multiplayer shark game built entirely with code created by artificial intelligence (AI), with measured cloud costs, accessible interfaces, and built-in security, reliability, and operating controls.",
-    primaryCapability: "Live multiplayer operation and governance",
-    technologies: ["Worker", "Durable Objects", "R2"],
-    tags: ["Cloudflare", "TypeScript", "ISO 27001", "ISO 42001"],
-    characteristics: ["Multiplayer game", "100% artificial-intelligence-developed", "ISO/IEC 27001 aligned", "ISO/IEC 42001 aligned", "Built-in cost controls"],
-    liveUrl: "https://sharktank.wizardgang.ai/play/",
-    operationsUrl: "https://sharktank.wizardgang.ai/evidence/",
-    sourceUrl: "https://github.com/Wizard-Gang/SharkTank",
-    preview: { id: "sharktank-gameplay", kind: "motion-controlled", fixture: "product-recreation" },
-    caseStudy: { title: "AI-Developed Multiplayer Game" },
-    problem: "Shark Tank is a game first, but running it creates real responsibilities. Multiplayer actions use billable cloud resources, public input must be checked, changes must be tested, and the fully AI-generated code needs a clear management process. Those controls must protect the game without getting in the player's way.",
-    built: [
-      "A realtime multiplayer game where sharks eat food, dash through the tank, fire rockets, and compete for score",
-      "Metering for billable actions, with a hard spending limit that can pause costly activity",
-      "Built-in access checks, input validation, protected operator controls, status monitoring, and recovery tools",
-      "A development process for a codebase written entirely by AI",
-      "Policies mapped to ISO/IEC 27001 and ISO/IEC 42001, with each supported claim linked to evidence",
-      "Service records for releases, uptime, operator actions, resource use, backups, and recovery tests",
-      "Keyboard support, visible focus, screen-reader updates, zoom support, and reduced-motion options"
-    ],
-    architecture: [
-      ["Browser", "Game surface and public trust routes"],
-      ["Worker", "Routing, validation, policy, and evidence surfaces"],
-      ["Durable Objects", "Rooms, state, sockets, logs, and receipts"],
-      ["R2", "Daily state copies and restore evidence"]
-    ],
-    engineering: "The controls are part of the same service as the game. New functionality goes through the same ISO-aligned rules for security, AI-generated code, change, cost, recovery, and evidence. The running service keeps the records that show those rules were followed.",
-    result: "Shark Tank is a playable multiplayer game built entirely with AI-generated code. It runs with ISO-aligned security and operating practices, limits its billable activity, documents its policies, and maintains evidence from the live service. It demonstrates alignment; it does not claim certification.",
-    narrative: {
-      tagline: "A multiplayer shark game built entirely with AI-generated code.",
-      what: "Players swim through a shared tank, eat food, dash forward, fire rockets, and compete for score. The live game also includes security checks, billable-action limits, status monitoring, backups, recovery tools, and public operating records.",
-      why: "Realtime gameplay uses cloud resources that cost money, accepts public input, and changes over time. Shark Tank was built to handle those everyday operating needs from the start while also governing a codebase produced entirely by AI.",
-      highlights: ["Realtime multiplayer shark gameplay", "A codebase written entirely by AI", "ISO/IEC 27001-aligned security and operating controls", "ISO/IEC 42001-aligned management of AI development", "Metered billable actions with a hard spending limit"]
-    },
-  },
-  {
     id: "hexframe",
     slug: "hexframe",
     name: "Hexframe",
-    number: "02",
+    number: "01",
     eyebrow: "Deterministic systems",
     summary: "A browser fighting game where every hit has one repeatable result. It includes accessible controls, training tools, replays, computer players, and a foundation for future online play.",
     primaryCapability: "Deterministic combat simulation",
@@ -152,7 +111,7 @@ export const projects = [
     id: "yarreader",
     slug: "yarreader",
     name: "YarReader",
-    number: "03",
+    number: "02",
     eyebrow: "Portable media pipeline",
     summary: "An offline comic and book library that turns mixed files into a checked, portable reader and can safely continue after a crash or interrupted copy.",
     primaryCapability: "Offline, recoverable media pipeline",

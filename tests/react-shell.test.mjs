@@ -75,7 +75,7 @@ test("the static shell loads only the generated TypeScript browser module withou
   assert.deepEqual(
     anchors(nav.inner).map((anchor) => textContent(anchor.inner).replace(/\s+/g, " ").trim()),
     ["Solutions", "Capabilities", "Industries", "Integrations", "Deployments",
-     "Projects", "SharkTank", "Hexframe", "YarReader", "About"]
+     "Projects", "Hexframe", "YarReader", "About"]
   );
 });
 
