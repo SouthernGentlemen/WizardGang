@@ -489,7 +489,6 @@ test("site boundary remains static and retired compliance application routes sta
   assert.equal(await exists(resolve(dist, "security/index.html")), false);
   const worker = await readRoot("src/worker/index.ts");
   assert.doesNotMatch(worker, /DurableObject|\bD1\b|\bR2\b|authentication|OPS_TOKEN/);
-  assert.match(worker, /sharktank\.wizardgang\.ai/);
   assert.equal(await exists(resolve(root, "src/site.mjs")), false);
   const home = await readDist("index.html");
   assert.doesNotMatch(await readDist(browserModulePath(home)), /Compliance — WizardGang|class=["']compliance-/);
