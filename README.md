@@ -14,7 +14,7 @@
 
 Navigation is Solutions, Projects, About. Solutions and Projects link to their index pages and open their menus on hover or keyboard focus; contact is in the footer. These seven routes are the whole site: retired paths return the ordinary 404. The generated 404 is noindex and is not a sitemap entry.
 
-The Worker keeps only what was never a page here — `/github`, `/compliance`, `/accessibility` and `/security` point outward — plus the SharkTank product boundary.
+The Worker keeps only what was never a page here — `/github`, `/compliance`, `/accessibility` and `/security` point outward. Everything else falls through to the site's assets and ordinary 404 behavior.
 
 **[Live site](https://wizardgang.ai)** · **[Solutions](https://wizardgang.ai/solutions/)** · **[Projects](https://wizardgang.ai/projects/)**
 
@@ -32,7 +32,7 @@ React + TypeScript page composition
 
 React renders complete static documents during the build. There is no client React hydration and no SPA router. Browser TypeScript progressively enhances language, display preferences, and mobile navigation.
 
-The TypeScript Worker owns runtime routing that cannot be expressed as static assets alone, including compatibility redirects and product-boundary routing. Wrangler owns local runtime and Cloudflare deployment configuration.
+The TypeScript Worker owns the outward shortcuts that cannot be expressed as static assets alone; all other requests fall through to Cloudflare assets. Wrangler owns local runtime and Cloudflare deployment configuration.
 
 ## Presentation
 
@@ -144,7 +144,7 @@ Key authorities:
 - `src/data/team.ts`, `src/data/professional.ts`, `src/data/professional-systems.ts` — people, career history, and attributed evidence.
 - `src/components/ProjectSurfaces.tsx` — shared project presentation contract.
 - `src/app/Document.tsx` — static document, metadata, and sitemap composition.
-- `src/worker/index.ts` — compatibility and runtime routing.
+- `src/worker/index.ts` — outward shortcuts and asset fallback.
 - `src/styles/tokens.css` — the design system.
 - `vite.config.ts` — static build pipeline.
 - `wrangler.jsonc` — local/staging/production Cloudflare configuration.

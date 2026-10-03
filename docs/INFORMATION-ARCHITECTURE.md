@@ -100,8 +100,6 @@ pages on this site: `/github` to the WizardGang GitHub organization, and
 `/compliance`, `/accessibility` and `/security` to the demo's assurance and
 security surfaces. They are outward aliases, not compatibility.
 
-The Worker also preserves the SharkTank compatibility and proxy boundary covered by Worker routing acceptance.
-
 ## Technical architecture
 
 WizardGang.ai is static-first:
@@ -132,7 +130,7 @@ The browser does not hydrate a React application. There is no SPA router. Static
 
 ### Worker and Cloudflare
 
-`src/worker/index.ts` is the Wrangler entry point and owns compatibility redirects and product-boundary behavior. `wrangler.jsonc` defines local, staging, and production configuration. Production serves `wizardgang.ai` as a custom domain.
+`src/worker/index.ts` is the Wrangler entry point and owns the outward shortcut redirects before asset fallback. `wrangler.jsonc` defines local, staging, and production configuration. Production serves `wizardgang.ai` as a custom domain.
 
 ## Local development
 
@@ -162,7 +160,7 @@ The enforced architecture includes:
 - direct internal canonical links, never through a redirect;
 - company and personal attribution boundaries;
 - accessibility and progressive-enhancement behavior;
-- Worker compatibility behavior;
+- Worker outward-shortcut behavior;
 - metadata correctness;
 - safe checkout-scoped local development.
 
