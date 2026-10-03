@@ -6,28 +6,10 @@
 
 SharkTank is becoming a lean game with no evidence pages, operations stack or ISO narrative (SharkTank ST-138). On 2026-10-02 the owner directed that the SharkTank material on wizardgang.ai be deleted:
 
-- the Worker proxy and legacy redirects into `sharktank.wizardgang.ai`;
 - the case study and its `/evidence/` and ISO-aligned claims;
 - the animated preview that still shows removed rockets and food dots.
 
-This must reach production before SharkTank `v2.1.0` deletes `/evidence/`. `sharktank.wizardgang.ai` stays owned by `Wizard-Gang/SharkTank`; this site simply stops describing or routing to it.
-
-### WG-116 — [REFACTOR] Remove the SharkTank proxy and legacy redirects from the Worker
-
-**Goal**
-
-The Worker still forwards about fifteen machine paths and redirects about twenty-six legacy paths into `sharktank.wizardgang.ai`, most of which already return 404 there.
-
-**Scope**
-
-- Delete from `src/worker/index.ts`: `SHARK_ORIGIN`, the machine-path proxy (`MACHINE_PATHS`, `isMachineRoute`, `proxyToSharkTank`), the protected-legacy redirects, the human compatibility redirects (including `/play`) and the `/policies/*` redirect.
-- The Worker keeps only the outward shortcuts (`/github`, `/compliance`, `/accessibility`, `/security`) and asset serving. Removed paths return the site's ordinary 404.
-- Update `tests/worker-routing.test.mjs`, the README and `docs/INFORMATION-ARCHITECTURE.md`, which still describe the SharkTank compatibility and proxy boundary.
-
-**Acceptance**
-
-- No Worker code, test or document references the SharkTank proxy, compatibility routes or `sharktank.wizardgang.ai` routing.
-- Pinned `npm ci`, canonical check and exact-head CI pass.
+This must reach production before SharkTank `v2.1.0` deletes `/evidence/`. `sharktank.wizardgang.ai` stays owned by `Wizard-Gang/SharkTank`; this site simply stops describing it.
 
 ### WG-117 — [CONTENT] Remove SharkTank from the site
 
