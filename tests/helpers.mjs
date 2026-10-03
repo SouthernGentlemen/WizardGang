@@ -9,7 +9,6 @@ export const CANONICAL_PAGES = new Map([
   ["index.html", "/"],
   ["solutions/index.html", "/solutions/"],
   ["projects/index.html", "/projects/"],
-  ["projects/sharktank/index.html", "/projects/sharktank/"],
   ["projects/hexframe/index.html", "/projects/hexframe/"],
   ["projects/yarreader/index.html", "/projects/yarreader/"],
   ["about/index.html", "/about/"],
@@ -20,20 +19,14 @@ export const SITEMAP_ROUTES = [
   "/",
   "/solutions/",
   "/projects/",
-  "/projects/sharktank/",
   "/projects/hexframe/",
   "/projects/yarreader/",
   "/about/"
 ];
 
-export const PROJECT_SLUGS = ["sharktank", "hexframe", "yarreader"];
+export const PROJECT_SLUGS = ["hexframe", "yarreader"];
 
 export const PROJECT_LINKS = {
-  sharktank: {
-    source: "https://github.com/Wizard-Gang/SharkTank",
-    live: "https://sharktank.wizardgang.ai/play/",
-    evidence: "https://sharktank.wizardgang.ai/evidence/"
-  },
   hexframe: {
     source: "https://github.com/Wizard-Gang/Hexframe",
     live: "https://hexframe.wizardgang.ai/play/"

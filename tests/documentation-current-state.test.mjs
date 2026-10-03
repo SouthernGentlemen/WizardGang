@@ -77,7 +77,6 @@ test("README documents the current entry points and acceptance gate", async () =
   for (const route of [
     "/solutions/",
     "/projects/",
-    "/projects/sharktank/",
     "/projects/hexframe/",
     "/projects/yarreader/",
     "/about/"
@@ -94,7 +93,6 @@ test("information architecture documents current company ownership and static-fi
   for (const value of [
     "Status: current-state authority",
     "/solutions/",
-    "/projects/sharktank/",
     "/about/",
     "demo.wizardgang.ai",
     "src/app/pageRegistry.ts",

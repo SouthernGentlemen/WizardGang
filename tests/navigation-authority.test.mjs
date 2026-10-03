@@ -22,7 +22,6 @@ const expectedNavigation = [
     label: "Projects",
     href: "/projects/",
     items: [
-      { label: "SharkTank", href: "/projects/sharktank/" },
       { label: "Hexframe", href: "/projects/hexframe/" },
       { label: "YarReader", href: "/projects/yarreader/" }
     ]
@@ -44,7 +43,6 @@ test("typed company navigation is exact and current-section matching is centrali
   const cases = new Map([
     ["/", ""],
     ["/solutions/", "solutions"],
-    ["/projects/sharktank/", "projects"],
     ["/projects/hexframe/", "projects"],
     ["/about/", "about"],
     ["/about/team/jacob/", "about"],

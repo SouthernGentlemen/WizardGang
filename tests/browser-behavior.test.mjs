@@ -158,7 +158,6 @@ test("language translation preserves exact and dynamic current behavior", () => 
   assert.equal(translateDynamic("About section"), "Sección Acerca de");
   assert.equal(translateDynamic("Professional systems and integration experience remains attributed in Jacob's Team record."), "La experiencia profesional en sistemas e integraciones sigue atribuida en el registro de Equipo de Jacob.");
   assert.equal(translateDynamic("Warehouse & Fulfillment"), "Almacén y cumplimiento");
-  assert.equal(translateDynamic("Play SharkTank"), "Jugar a SharkTank");
   assert.equal(translateDynamic("Read the Hexframe case study"), "Leer el caso de estudio de Hexframe");
   assert.equal(translateDynamic("Visit WizardGang on GitHub"), "Visitar WizardGang en GitHub");
   // An exact entry wins over a pattern that would also match it.
@@ -256,6 +255,5 @@ test("reduced motion remains the CSS accessibility boundary and overrides previe
   const styles = await readFile(resolve(root, "src/styles/globals.css"), "utf8");
   assert.match(styles, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   const reduced = styles.slice(styles.lastIndexOf("@media (prefers-reduced-motion: reduce)"));
-  assert.match(reduced, /\.tank-fish[\s\S]*animation:\s*none/);
   assert.match(reduced, /\.lab-playhead[\s\S]*animation:\s*none/);
 });
