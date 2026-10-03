@@ -2,7 +2,7 @@
 
 ## Supported surface
 
-Security reports are accepted for the current `wizardgang.ai` site and its stateless TypeScript compatibility Worker.
+Security reports are accepted for the current `wizardgang.ai` site and its stateless TypeScript Worker.
 
 Hexframe, YarReader, and the detailed Demo Framework application are separate system boundaries. Report product-specific issues through the owning repository or operating surface.
 

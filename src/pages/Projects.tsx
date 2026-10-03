@@ -1,14 +1,14 @@
 import type { ReactPageDefinition } from "../app/contracts";
 import { PROJECTS_ROOT, projectActionsFor, projectPath, projects } from "../data/projects";
 
-/* The Projects index. The navigation menu lists the same three case studies, so
+/* The Projects index. The navigation menu lists the same case studies, so
    this page exists for the click on "Projects" itself — it says what the work is
    before asking anyone to pick one. */
 export const PROJECTS_PAGE: ReactPageDefinition = {
   relative: "projects/index.html",
   metadata: {
     title: "Projects — WizardGang",
-    description: "SharkTank, Hexframe and YarReader: open-source software WizardGang builds and operates, with source, case studies and live applications where available.",
+    description: "Hexframe and YarReader: open-source software WizardGang builds and operates, with source, case studies and live applications where available.",
     path: PROJECTS_ROOT,
     socialImage: "/og.jpg"
   },

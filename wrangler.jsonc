@@ -4,7 +4,7 @@
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-08-28",
   // Let normal asset matching happen first. When no asset matches, invoke the stateless
-  // compatibility Worker instead of treating browser navigations as automatic 404 pages.
+  // Worker for its outward shortcuts instead of treating browser navigations as automatic 404 pages.
   "compatibility_flags": ["assets_navigation_has_no_effect"],
   "workers_dev": true,
   "preview_urls": false,

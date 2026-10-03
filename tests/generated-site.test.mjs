@@ -149,6 +149,7 @@ test("every canonical page preserves document, metadata, link, and local-asset b
         "29631"
       ], relative);
       assert.doesNotMatch(html, /865[ -]?9031/i, `${relative} exposes private contact information`);
+      assert.doesNotMatch(html, /sharktank/i, `${relative} still presents the retired SharkTank project`);
       assert.doesNotMatch(html, /href=["']\/resume/i, `${relative} links the retired resume route`);
       assert.doesNotMatch(html, />\s*Resume\s*</i, `${relative} exposes retired Resume content`);
       assert.doesNotMatch(html, /coming soon|disabled/i, `${relative} contains a disabled or coming-soon action`);
