@@ -80,9 +80,6 @@ export function SiteHeader({ current }: { current: CurrentNavSection }) {
   );
 }
 
-/* The preferences gear, after the in-game tools rail on SharkTank: one icon
-   trigger whose panel holds the whole set. A `details` rather than a scripted
-   popover, so it opens with the keyboard and without JavaScript. */
 export function Preferences() {
   return (
     <details className="prefs">

@@ -67,7 +67,7 @@ test("generated HTML inventory is the explicit canonical contract", async () => 
     .map(relativeFromDist)
     .sort();
   assert.deepEqual(actual, [...canonicalFiles].sort());
-  assert.equal(actual.length, 8, "seven canonical pages plus the generated 404");
+  assert.equal(actual.length, 7, "six canonical pages plus the generated 404");
 });
 
 test("all required public build artifacts and public records exist", async () => {
@@ -80,11 +80,12 @@ test("all required public build artifacts and public records exist", async () =>
     "robots.txt",
     "version.json",
     "og.jpg",
-    "sharktank-project.jpg",
     "hexframe-project.jpg",
     "yarreader-library-art.jpg"
   ];
   for (const file of artifacts) assert.equal(await exists(resolve(dist, file)), true, `missing build artifact ${file}`);
+  assert.equal(await exists(resolve(dist, "sharktank-project.jpg")), false, "retired SharkTank image must not be emitted");
+  assert.equal(await exists(resolve(dist, "projects/sharktank/index.html")), false, "retired SharkTank route must not be emitted");
   const browserAssets = (await walk(resolve(dist, "assets")))
     .map(relativeFromDist)
     .filter((file) => /^assets\/browser-[A-Za-z0-9_-]+\.js$/.test(file));
@@ -248,7 +249,7 @@ test("the homepage leads with the work and states its offer once", async () => {
     "Justice &amp; Court Systems", "Public-Sector Workflows", "Enterprise &amp; AI Infrastructure",
     "Integrations", "ERP Integrations", "Commerce &amp; Fulfillment", "Warehouse Automation",
     "Carrier Integrations", "EDI &amp; B2B", "Warehouse Hardware", "Development &amp; Workflow",
-    "Justice &amp; Legal", "Selected projects", "SharkTank", "Hexframe", "YarReader",
+    "Justice &amp; Legal", "Selected projects", "Hexframe", "YarReader",
     "Explore the Architecture"
   ], "homepage");
 
@@ -277,7 +278,7 @@ test("the homepage leads with the work and states its offer once", async () => {
   assert.deepEqual([...new Set(named.map(({ attrs }) => attrs.get("name")))], ["work-list"]);
 
   const projectRows = panels.filter(({ attrs }) => attrs.get("name") === "work-list");
-  assert.equal(projectRows.length, 3, "one disclosure per project");
+  assert.equal(projectRows.length, 2, "one disclosure per project");
   assert.deepEqual([...new Set(projectRows.map(({ attrs }) => attrs.get("name")))], ["work-list"],
     "project rows share one exclusive group so only one preview can run");
 
@@ -287,7 +288,8 @@ test("the homepage leads with the work and states its offer once", async () => {
 
 test("each project has a page with its preview and outbound relationships", async () => {
   const home = await readDist("index.html");
-  for (const label of ["Shark Tank gameplay", "Hexframe training mode", "YarReader sample library"]) {
+  assert.doesNotMatch(home, /SharkTank|sharktank/, "home must not present the retired SharkTank project");
+  for (const label of ["Hexframe training mode", "YarReader sample library"]) {
     assert.ok(startTags(home, "div").some(({ attrs }) => (attrs.get("aria-label") || "").includes(label)), `home missing semantic preview: ${label}`);
   }
 
@@ -316,28 +318,24 @@ test("canonical project data retains the source/live/evidence contract", () => {
 });
 
 test("project substance survived the move onto per-project pages", async () => {
-  const sharktank = await readDist("projects/sharktank/index.html");
-  requireText(sharktank, [
-    "Shark Tank is a game first, but running it creates real responsibilities",
-    "ISO/IEC 27001",
-    "ISO/IEC 42001",
-    "Metering for billable actions, with a hard spending limit",
-    "It demonstrates alignment; it does not claim certification."
-  ], "SharkTank");
+  const hexframe = await readDist("projects/hexframe/index.html");
+  const yarreader = await readDist("projects/yarreader/index.html");
 
-  requireText(await readDist("projects/hexframe/index.html"), [
+  requireText(hexframe, [
     "The match, training screen, computer player, replay, saved game",
     "A playable training stage with one fighter and one practice dummy",
     "Freeze automatically when a hit connects"
   ], "Hexframe");
 
-  requireText(await readDist("projects/yarreader/index.html"), [
+  requireText(yarreader, [
     "A single folder may contain comics, ebooks, PDFs, loose images",
     "YarReader continues from its work journal"
   ], "YarReader");
 
-  for (const label of ["Problem", "Built", "Architecture", "Approach", "Result"]) {
-    assert.ok(sharktank.includes(`>${label}<`), `a project page must keep the ${label} section`);
+  for (const page of [hexframe, yarreader]) {
+    for (const label of ["Problem", "Built", "Architecture", "Approach", "Result"]) {
+      assert.ok(page.includes(`>${label}<`), `a project page must keep the ${label} section`);
+    }
   }
 });
 
@@ -424,7 +422,7 @@ test("Capabilities leads Solutions and links to every architecture demonstration
 
 test("the Projects index introduces each case study and its available live demo", async () => {
   const index = await readDist("projects/index.html");
-  requireText(index, ["Projects", "SharkTank", "Hexframe", "YarReader"], "projects index");
+  requireText(index, ["Projects", "Hexframe", "YarReader"], "projects index");
   for (const slug of PROJECT_SLUGS) {
     assert.ok(anchorWithHref(index, `/projects/${slug}/`), `Projects index must link to ${slug}`);
   }

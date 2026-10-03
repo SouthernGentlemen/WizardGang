@@ -6,13 +6,12 @@ Implementation authority remains the typed source and acceptance tests. This doc
 
 ## Public hierarchy
 
-Seven canonical pages. The primary navigation is Solutions, Projects and About. Solutions and Projects are links to their index pages, with menus that open on hover or keyboard focus. The Solutions menu points at its four sections; the Projects menu points at the three case studies. Home is reached through the wordmark, and contact lives in the footer.
+Six canonical pages. The primary navigation is Solutions, Projects and About. Solutions and Projects are links to their index pages, with menus that open on hover or keyboard focus. The Solutions menu points at its four sections; the Projects menu points at the two case studies. Home is reached through the wordmark, and contact lives in the footer.
 
 ```text
 /
 ├── /solutions/            #capabilities, #industries, #integrations, #deployments
 ├── /projects/
-├── /projects/sharktank/
 ├── /projects/hexframe/
 ├── /projects/yarreader/
 └── /about/
@@ -168,7 +167,7 @@ The enforced architecture includes:
 
 - `wizardgang.ai` — the company site owned by this repository.
 - `demo.wizardgang.ai` — the detailed architecture, assurance, and evidence application.
-- `sharktank.wizardgang.ai` and `hexframe.wizardgang.ai` — product runtimes.
+- `hexframe.wizardgang.ai` — product runtime.
 - WizardGang GitHub repositories — source and releases.
 
 Product runtime implementation, operational data, and product-specific evidence stay with their owning systems rather than being duplicated here.

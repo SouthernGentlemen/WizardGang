@@ -333,118 +333,6 @@ function HexframeMoveData() {
   );
 }
 
-export function SharkTankPreview() {
-  return (
-    <div className="project-visual tank-preview" role="img" aria-label="Shark Tank gameplay: rival sharks chase and eat food dots while the player's cyan shark chomp-dashes and fires a rocket across the live tank">
-      <div className="tank-arena">
-        <svg viewBox="0 0 800 470" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-          <defs>
-            <pattern id="tankSea" width="48" height="48" patternUnits="userSpaceOnUse">
-              <circle cx="7" cy="9" r="2.1" fill="#2f7a92" fillOpacity=".5" />
-              <circle cx="31" cy="30" r="1.5" fill="#4b3f86" fillOpacity=".55" />
-            </pattern>
-            <symbol id="tankShark" viewBox="0 0 180 110">
-              <path d="M35 55 4 26l8 30-8 29 31-25c12 26 67 35 112 4 12-8 20-8 29-9-9-2-17-4-29-12C102 13 47 27 35 55Z" fill="var(--body, #22e6ff)" stroke="#070b14" strokeWidth="5" strokeLinejoin="round" />
-              <path d="M76 29 91 5l19 28M76 75 90 102l14-29" fill="var(--accent, #0891b2)" stroke="#070b14" strokeWidth="5" strokeLinejoin="round" />
-              <path d="M41 48c24-15 62-22 106-5-43-8-79 1-105 19Z" fill="#fff" opacity=".18" />
-              <circle cx="137" cy="40" r="13" fill="#fff" stroke="#070b14" strokeWidth="4" />
-              <circle cx="142" cy="43" r="5" fill="#070b14" />
-              <path d="M119 66q21 16 42-2-21 31-42 2Z" fill="#47142a" stroke="#070b14" strokeWidth="4" strokeLinejoin="round" />
-              <path d="m126 69 5 10 6-8 6 8 5-11" fill="#fff" stroke="#070b14" strokeWidth="2" strokeLinejoin="round" />
-              <circle cx="158" cy="48" r="3" fill="#070b14" />
-            </symbol>
-            <symbol id="tankRocket" viewBox="0 0 72 34">
-              <path d="M66 17 47 6H23L9 17l14 11h24Z" fill="#f3f1ff" stroke="#070b14" strokeWidth="3" strokeLinejoin="round" />
-              <path d="M25 7 9 1l5 16L9 33l16-6" fill="#ff5a36" stroke="#070b14" strokeWidth="3" strokeLinejoin="round" />
-              <circle cx="47" cy="17" r="6" fill="#22e6ff" stroke="#070b14" strokeWidth="3" />
-            </symbol>
-          </defs>
-          <rect width="800" height="470" fill="#0b0a14" />
-          <rect width="800" height="470" fill="url(#tankSea)" />
-          <g stroke="#315468" strokeOpacity=".54" strokeWidth="1">
-            <path d="M96 0v470M226 0v470M356 0v470M486 0v470M616 0v470" />
-          </g>
-          <g className="tank-food" aria-hidden="true">
-            <circle cx="196" cy="196" r="3.4" fill="#ffd54a" opacity=".8" />
-            <circle className="tank-food-eat tank-food-eat-a" cx="477" cy="176" r="4.2" fill="#ffd54a" />
-            <circle className="tank-food-eat tank-food-eat-b" cx="297" cy="351" r="4.2" fill="#22e6ff" />
-            <circle className="tank-food-eat tank-food-eat-c" cx="543" cy="376" r="5.2" fill="#ff8a1f" />
-            <circle className="tank-food-eat tank-food-eat-you" cx="449" cy="241" r="4.6" fill="#ffd54a" />
-            <circle cx="243" cy="286" r="3.4" fill="#22e6ff" opacity=".8" />
-            <circle cx="404" cy="150" r="3.4" fill="#ffd54a" opacity=".8" />
-            <circle cx="470" cy="268" r="5" fill="#ff8a1f" opacity=".98" />
-            <circle cx="330" cy="404" r="3.4" fill="#ffd54a" opacity=".8" />
-            <circle cx="150" cy="330" r="3.4" fill="#22e6ff" opacity=".8" />
-            <circle cx="530" cy="196" r="3.4" fill="#ffd54a" opacity=".8" />
-          </g>
-          <g className="tank-fish tank-fish-a"><use href="#tankShark" x="380" y="150" width="78" height="48" className="skin-gold" /></g>
-          <g className="tank-fish tank-fish-b"><use href="#tankShark" x="196" y="330" width="70" height="43" className="skin-violet" /></g>
-          <g className="tank-fish tank-fish-c"><use href="#tankShark" x="424" y="356" width="64" height="39" className="skin-orange" /></g>
-          <g className="tank-fish tank-fish-you">
-            <g className="tank-dash-trail">
-              <circle cx="280" cy="244" r="10" fill="#22e6ff" />
-              <circle cx="258" cy="248" r="7" fill="#fff" />
-              <circle cx="239" cy="241" r="5" fill="#22e6ff" />
-              <circle cx="224" cy="246" r="3.5" fill="#fff" />
-            </g>
-            <use href="#tankShark" x="286" y="212" width="106" height="65" className="skin-cyan" />
-          </g>
-          <g className="tank-rocket-shot">
-            <g className="tank-rocket-flame">
-              <circle cx="-8" cy="17" r="7" fill="#ff5a36" />
-              <circle cx="-20" cy="17" r="5" fill="#ffd54a" />
-              <circle cx="-31" cy="17" r="3.5" fill="#ff5a36" />
-            </g>
-            <use href="#tankRocket" width="72" height="34" />
-          </g>
-          <g transform="translate(702 234)">
-            <g className="tank-rocket-burst">
-              <circle cx="-23" cy="-5" r="6" fill="#ff5a36" />
-              <circle cx="-13" cy="-19" r="5" fill="#ffd54a" />
-              <circle cx="4" cy="-24" r="4" fill="#fff" />
-              <circle cx="19" cy="-14" r="6" fill="#ff8a1f" />
-              <circle cx="25" cy="4" r="5" fill="#ffd54a" />
-              <circle cx="12" cy="20" r="6" fill="#ff5a36" />
-              <circle cx="-7" cy="24" r="4" fill="#fff" />
-              <circle cx="-22" cy="14" r="5" fill="#ff8a1f" />
-              <circle r="10" fill="#fff" />
-            </g>
-          </g>
-        </svg>
-      </div>
-      <div className="tank-readout">
-        <div className="tank-card"><span>Points</span><strong>2</strong></div>
-        <div className="tank-card"><span>Rank</span><strong>16<small> / 24</small></strong></div>
-        <div className="tank-card"><span>Size</span><strong>1.0<small>×</small></strong></div>
-      </div>
-      <div className="tank-board">
-        <p className="tank-board-title">Top Sharks</p>
-        <ol>
-          <li><span>1</span><i className="dot-lime"></i><b>Wriggle</b><em>230</em></li>
-          <li><span>2</span><i className="dot-violet"></i><b>Molar</b><em>197</em></li>
-          <li><span>3</span><i className="dot-gold"></i><b>Chowder</b><em>177</em></li>
-          <li><span>4</span><i className="dot-violet"></i><b>Fang</b><em>134</em></li>
-          <li><span>5</span><i className="dot-cyan"></i><b>Barnacle</b><em>50</em></li>
-        </ol>
-      </div>
-      <div className="tank-abilities">
-        <span className="tank-ability tank-dash">
-          <svg viewBox="0 0 32 24" aria-hidden="true"><path d="M2 6h13M1 12h11M4 18h11M17 2l13 10-13 10Z" /></svg>
-          <b>Dash</b><small>Space</small>
-        </span>
-        <span className="tank-ability tank-rocket">
-          <svg viewBox="0 0 32 32" aria-hidden="true">
-            <path d="M19 4c4-2 7-2 9-2 0 2 0 5-2 9L15 22l-6-6L19 4Z" />
-            <path d="m10 16-6 1-2 6 8-2M15 22l-1 8 6-2 1-6M9 23l-6 6" />
-            <circle cx="22" cy="8" r="3" />
-          </svg>
-          <b>Rocket</b><small>Shift</small>
-        </span>
-      </div>
-    </div>
-  );
-}
-
 export function HexframePreview() {
   return (
     <div className="preview-with-data">
@@ -528,8 +416,6 @@ export function YarReaderPreview() {
 
 export function ProjectPreview({ project }: { project: ProjectRecord }) {
   switch (project.slug) {
-    case "sharktank":
-      return <SharkTankPreview />;
     case "hexframe":
       return <HexframePreview />;
     case "yarreader":

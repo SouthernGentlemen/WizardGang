@@ -14,7 +14,7 @@ import {
 // Solutions and Projects link to their index pages and open their submenus.
 const navMenus = new Map([
   ["Solutions", { href: "/solutions/", items: ["/solutions/#capabilities", "/solutions/#industries", "/solutions/#integrations", "/solutions/#deployments"] }],
-  ["Projects", { href: "/projects/", items: ["/projects/sharktank/", "/projects/hexframe/", "/projects/yarreader/"] }]
+  ["Projects", { href: "/projects/", items: ["/projects/hexframe/", "/projects/yarreader/"] }]
 ]);
 const navLinks = new Map([["About", "/about/"]]);
 
@@ -255,7 +255,7 @@ test("compact project actions keep destination-specific accessible names without
 });
 
 test("project previews remain excluded from the accessibility tree while useful descriptions stay outside them", async () => {
-  const previewPages = { "index.html": 3, "projects/sharktank/index.html": 1, "projects/hexframe/index.html": 1, "projects/yarreader/index.html": 1 };
+  const previewPages = { "index.html": 2, "projects/hexframe/index.html": 1, "projects/yarreader/index.html": 1 };
   for (const [relative, expected] of Object.entries(previewPages)) {
     const html = await readDist(relative);
     const decorative = startTags(html, "div").filter(({ attrs }) => attrs.get("aria-hidden") === "true" && attrs.has("inert"));
@@ -270,7 +270,7 @@ test("project previews remain excluded from the accessibility tree while useful 
   assert.doesNotMatch(home, /<text\b/i, "decorative SVG previews must not duplicate text content");
 });
 
-test("CSS exposes preference behavior, mobile open state, target sizing, reduced motion, and safe preview flashing", async () => {
+test("CSS exposes preference behavior, mobile open state, target sizing, and reduced motion", async () => {
   const styles = await readDist("assets/styles.css");
 
   // These control-linked selectors are intentional seams: CSS itself implements the behavior,
@@ -290,12 +290,8 @@ test("CSS exposes preference behavior, mobile open state, target sizing, reduced
   const reducedMotionMarkers = [...styles.matchAll(/@media\s*\(prefers-reduced-motion:\s*reduce\)/g)];
   assert.ok(reducedMotionMarkers.length >= 1, "reduced-motion behavior must remain present in the emitted stylesheet");
   const previewReduced = styles.slice(reducedMotionMarkers[0].index);
-  assert.match(previewReduced, /\.tank-fish[\s\S]*animation:\s*none/);
   assert.match(previewReduced, /\.lab-playhead[\s\S]*animation:\s*none/);
 
-  const flame = styles.match(/\.tank-rocket-flame\s*\{[^}]*animation:\s*[^;}]*?([\d.]+)s[^;}]*(?:;|\})/s);
-  assert.ok(flame, "preview flash behavior must remain explicitly timed");
-  assert.ok(Number(flame[1]) >= 1 / 3, "preview flash timing must remain below three flashes per second");
 });
 
 test("dark and light preference palettes retain readable text and visible focus contrast", async () => {

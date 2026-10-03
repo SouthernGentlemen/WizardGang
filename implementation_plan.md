@@ -4,30 +4,9 @@
 
 **Owner direction — remove SharkTank from wizardgang.ai**
 
-SharkTank is becoming a lean game with no evidence pages, operations stack or ISO narrative (SharkTank ST-138). On 2026-10-02 the owner directed that the SharkTank material on wizardgang.ai be deleted:
+SharkTank is becoming a lean game with no evidence pages, operations stack or ISO narrative (SharkTank ST-138). The owner directed that wizardgang.ai contain no SharkTank project content or routing.
 
-- the case study and its `/evidence/` and ISO-aligned claims;
-- the animated preview that still shows removed rockets and food dots.
-
-This must reach production before SharkTank `v2.1.0` deletes `/evidence/`. `sharktank.wizardgang.ai` stays owned by `Wizard-Gang/SharkTank`; this site simply stops describing it.
-
-### WG-117 — [CONTENT] Remove SharkTank from the site
-
-**Goal**
-
-The SharkTank case study describes ISO-aligned operations and links an evidence page that SharkTank is deleting. Its animated preview shows a game that no longer exists.
-
-**Scope**
-
-- Remove `sharktank` from the project registry and data. This removes the case study page, the home and projects-index cards, the Projects navigation item and the sitemap entry.
-- Delete `SharkTankPreview` and its `tank-*` styles, `public/sharktank-project.jpg` with its `_headers` rule, the SharkTank translation strings and the SharkTank comment in `SiteChrome.tsx`.
-- Update the tests that enumerate projects, routes, previews and translations: `helpers.mjs`, `generated-site`, `navigation-authority`, `accessibility-contract`, `documentation-current-state`, `frontend-authority`, `react-shell` and `browser-behavior`.
-- Update `docs/OWNERSHIP.md`, `docs/INFORMATION-ARCHITECTURE.md`, `docs/COMPLIANCE.md`, `LICENSE.md` and `SECURITY.md` so none of them presents SharkTank as a site project.
-
-**Acceptance**
-
-- The built site has no SharkTank page, card, preview, image or link, and `/projects/sharktank/` returns the ordinary 404.
-- Pinned `npm ci`, canonical check and exact-head CI pass.
+The source removal must reach production before SharkTank `v2.1.0` deletes `/evidence/`. `sharktank.wizardgang.ai` stays owned by `Wizard-Gang/SharkTank`; wizardgang.ai no longer describes or routes to it.
 
 ### WG-118 — [RELEASE] Release the SharkTank removal as v1.2.2
 
