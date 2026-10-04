@@ -1,5 +1,3 @@
-import { projectPath } from "./projects.ts";
-
 export const INTEGRATIONS_PATH = "/services/#integrations" as const;
 
 export type IntegrationCategoryId =
@@ -139,13 +137,6 @@ export const integrationCategories = [
         href: "/about/team/jacob/#skills-heading",
         note: "SQL, ETL, and data-mapping experience stays attributed to Jacob's professional record."
       },
-      {
-        id: "data-project-evidence",
-        kind: "project",
-        label: "YarReader pipeline project",
-        href: projectPath("yarreader"),
-        note: "YarReader is WizardGang-owned project evidence for a verified, recoverable data-processing pipeline."
-      }
     ]
   },
   {

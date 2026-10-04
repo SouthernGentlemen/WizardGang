@@ -25,7 +25,7 @@ Individual logo files may originate from sources with different terms, including
 
 Employment roles, employer/customer deployments, integrations, and professional outcomes described by this site are professional evidence and are not WizardGang client engagements unless an authoritative source says otherwise. See [docs/OWNERSHIP.md](docs/OWNERSHIP.md).
 
-Hexframe, YarReader, and the Demo Framework have separate source/system authorities. Their code, assets, data, releases, and operating records are governed by their own repositories or systems; this repository's public descriptions do not transfer licensing or ownership rights.
+Hexframe and the Demo Framework have separate source/system authorities. Their code, assets, data, releases, and operating records are governed by their own repositories or systems; this repository's public descriptions do not transfer licensing or ownership rights.
 
 ## Contributions
 

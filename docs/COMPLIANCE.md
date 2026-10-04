@@ -6,8 +6,8 @@ Owner: Jacob Yongue
 
 Scope: the public `wizardgang.ai` site, its generated HTML/CSS/JavaScript, its stateless
 Cloudflare Worker, its public source repository, and the process used to create and release them.
-The independently operated Hexframe and YarReader products are outside this management
-boundary and maintain their own source and operating records.
+The independently operated Hexframe product is outside this management
+boundary and maintains its own source and operating records.
 
 This is a public implementation record and self-assessment. It is not an ISO certification,
 accredited audit result, legal opinion, or claim of complete conformity.

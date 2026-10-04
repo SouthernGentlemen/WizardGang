@@ -20,9 +20,6 @@
 /og-jacob-yongue.jpg
   Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
 
-/yarreader-library-art.jpg
-  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
-
 /hexframe-project.jpg
   Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
 

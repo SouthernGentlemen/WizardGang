@@ -371,54 +371,9 @@ export function HexframePreview() {
   );
 }
 
-const YAR_SERIES = [
-  { name: "Violet Orbit", units: 12, meta: "Comic · 0001 – 0012" },
-  { name: "Nocturne City", units: 8, meta: "Comic · 0001 – 0008" },
-  { name: "Iron Pilgrim", units: 16, meta: "Manga · 0001 – 0016" },
-  { name: "The Amber Reach", units: 6, meta: "Comic · 0001 – 0006" },
-  { name: "Below the Line", units: 10, meta: "Webtoon · 0001 – 0010" },
-  { name: "Verdant Passage", units: 14, meta: "Manga · 0001 – 0014" }
-] as const;
-
-export function YarReaderPreview() {
-  return (
-    <div className="project-visual yar-preview" data-fixture="synthetic" aria-label="YarReader sample library with original fictional comics, manga and webtoons, a search field, filters, and per-series unit counts and chapter ranges">
-      <div className="yar-head">
-        <div className="yar-id"><strong>YarReader</strong><span>6 fictional series · 66 chapters · Original demo artwork</span></div>
-        <div className="yar-search">Search series, title, year</div>
-        <div className="yar-select">Alphabetical</div>
-      </div>
-      <div className="yar-filters">
-        <span className="yar-label">Format</span>
-        <span className="yar-pill yar-pill-on">All formats</span>
-        <span className="yar-pill">Manga (RTL)</span>
-        <span className="yar-pill">Comics (LTR)</span>
-        <span className="yar-pill">Webtoons (Scroll)</span>
-        <span className="yar-label yar-label-genre">Genre</span>
-        <span className="yar-select yar-select-small">All genres</span>
-      </div>
-      <div className="yar-scope">
-        <span className="yar-pill yar-pill-on">Series</span>
-        <span className="yar-pill">Chapters</span>
-        <em>6 sample series</em>
-      </div>
-      <div className="yar-grid">
-        {YAR_SERIES.map((series, index) => (
-          <article className="yar-card" key={series.name}>
-            <div className={`yar-art yar-art-${index}`} role="img" aria-label={`Original fictional cover art for ${series.name}`}><i>{series.units}</i></div>
-            <div className="yar-body"><span>{series.name}</span><strong>{series.units} units</strong><em>{series.meta}</em></div>
-          </article>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function ProjectPreview({ project }: { project: ProjectRecord }) {
   switch (project.slug) {
     case "hexframe":
       return <HexframePreview />;
-    case "yarreader":
-      return <YarReaderPreview />;
   }
 }

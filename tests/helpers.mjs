@@ -10,7 +10,6 @@ export const CANONICAL_PAGES = new Map([
   ["solutions/index.html", "/solutions/"],
   ["projects/index.html", "/projects/"],
   ["projects/hexframe/index.html", "/projects/hexframe/"],
-  ["projects/yarreader/index.html", "/projects/yarreader/"],
   ["about/index.html", "/about/"],
   ["404.html", null]
 ]);
@@ -20,20 +19,15 @@ export const SITEMAP_ROUTES = [
   "/solutions/",
   "/projects/",
   "/projects/hexframe/",
-  "/projects/yarreader/",
   "/about/"
 ];
 
-export const PROJECT_SLUGS = ["hexframe", "yarreader"];
+export const PROJECT_SLUGS = ["hexframe"];
 
 export const PROJECT_LINKS = {
   hexframe: {
     source: "https://github.com/Wizard-Gang/Hexframe",
     live: "https://hexframe.wizardgang.ai/play/"
-  },
-  yarreader: {
-    source: "https://github.com/Wizard-Gang/YarReader",
-    live: null
   }
 };
 
