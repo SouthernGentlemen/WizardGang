@@ -125,11 +125,19 @@ export const SOLUTIONS_PAGE: ReactPageDefinition = {
         <ul className="deployment-wall" aria-label="Organizations where these systems went live">
           {deployments.map((deployment) => (
             <li key={`${deployment.name}-${deployment.solution}`}>
-              <a href={deployment.url}>
-                <strong>{deployment.name} <span aria-hidden="true">↗</span></strong>
-                <span>{deployment.solution}</span>
-                <em>{deployment.employer}</em>
-              </a>
+              {deployment.url ? (
+                <a href={deployment.url}>
+                  <strong>{deployment.name} <span aria-hidden="true">↗</span></strong>
+                  <span>{deployment.solution}</span>
+                  <em>{deployment.employer}</em>
+                </a>
+              ) : (
+                <div className="deployment-record">
+                  <strong>{deployment.name}</strong>
+                  <span>{deployment.solution}</span>
+                  <em>{deployment.employer}</em>
+                </div>
+              )}
             </li>
           ))}
         </ul>

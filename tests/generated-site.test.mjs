@@ -400,9 +400,16 @@ test("the deployment record carries the owner's corrections and reads by organiz
   const wall = tagBlocks(solutions, "ul").find(({ attrs }) => attrs.get("class") === "deployment-wall");
   assert.deepEqual(
     tagBlocks(wall.inner, "li").map(({ inner }) => textContent(inner)),
-    deployments.map(({ name, solution, employer }) => `${name} ↗ ${solution} ${employer}`),
+    deployments.map(({ name, url, solution, employer }) => `${name}${url ? " ↗" : ""} ${solution} ${employer}`),
     "Solutions must list every deployment, with its solution and employer, in record order"
   );
+
+  const deploymentHrefs = new Set(anchors(wall.inner).map(({ href }) => href.replaceAll("&amp;", "&")));
+  assert.equal(deploymentHrefs.has("https://www.amware.net/"), false, "Amware must not link to its dead site");
+  assert.equal(deploymentHrefs.has("https://www.buyseasons.com/"), false, "BuySeasons must not link to its dead site");
+  for (const deployment of deployments) {
+    if (deployment.url) assert.ok(deploymentHrefs.has(deployment.url), `${deployment.name} must keep its deployment link`);
+  }
 });
 
 test("Capabilities leads Solutions and links to every architecture demonstration", async () => {
