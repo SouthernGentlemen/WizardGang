@@ -14,7 +14,7 @@ import {
 // Solutions and Projects link to their index pages and open their submenus.
 const navMenus = new Map([
   ["Solutions", { href: "/solutions/", items: ["/solutions/#capabilities", "/solutions/#industries", "/solutions/#integrations", "/solutions/#deployments"] }],
-  ["Projects", { href: "/projects/", items: ["/projects/hexframe/", "/projects/yarreader/"] }]
+  ["Projects", { href: "/projects/", items: ["/projects/hexframe/"] }]
 ]);
 const navLinks = new Map([["About", "/about/"]]);
 
@@ -255,7 +255,7 @@ test("compact project actions keep destination-specific accessible names without
 });
 
 test("project previews remain excluded from the accessibility tree while useful descriptions stay outside them", async () => {
-  const previewPages = { "index.html": 2, "projects/hexframe/index.html": 1, "projects/yarreader/index.html": 1 };
+  const previewPages = { "index.html": 1, "projects/hexframe/index.html": 1 };
   for (const [relative, expected] of Object.entries(previewPages)) {
     const html = await readDist(relative);
     const decorative = startTags(html, "div").filter(({ attrs }) => attrs.get("aria-hidden") === "true" && attrs.has("inert"));

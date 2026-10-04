@@ -6,14 +6,13 @@ Implementation authority remains the typed source and acceptance tests. This doc
 
 ## Public hierarchy
 
-Six canonical pages. The primary navigation is Solutions, Projects and About. Solutions and Projects are links to their index pages, with menus that open on hover or keyboard focus. The Solutions menu points at its four sections; the Projects menu points at the two case studies. Home is reached through the wordmark, and contact lives in the footer.
+Five canonical pages. The primary navigation is Solutions, Projects and About. Solutions and Projects are links to their index pages, with menus that open on hover or keyboard focus. The Solutions menu points at its four sections; the Projects menu points at the case study. Home is reached through the wordmark, and contact lives in the footer.
 
 ```text
 /
 ├── /solutions/            #capabilities, #industries, #integrations, #deployments
 ├── /projects/
 ├── /projects/hexframe/
-├── /projects/yarreader/
 └── /about/
 ```
 

@@ -1,8 +1,8 @@
-export type ProjectSlug = "hexframe" | "yarreader";
+export type ProjectSlug = "hexframe";
 export type ProjectId = ProjectSlug;
 export type ProjectArchitectureItem = readonly [name: string, detail: string];
-export type ProjectPreviewKind = "motion-controlled" | "static";
-export type ProjectPreviewFixture = "product-recreation" | "synthetic-demo";
+export type ProjectPreviewKind = "motion-controlled";
+export type ProjectPreviewFixture = "product-recreation";
 
 export const PROJECTS_ROOT = "/projects/" as const;
 
@@ -107,45 +107,6 @@ export const projects = [
       highlights: ["A playable stage with a practice dummy", "Pause-on-contact and frame-by-frame controls", "Hitbox, hurtbox, pushbox, and state inspection", "Saved positions and repeatable scenario replays", "Keyboard, gamepad, and accessible display settings"]
     },
   },
-  {
-    id: "yarreader",
-    slug: "yarreader",
-    name: "YarReader",
-    number: "02",
-    eyebrow: "Portable media pipeline",
-    summary: "An offline comic and book library that turns mixed files into a checked, portable reader and can safely continue after a crash or interrupted copy.",
-    primaryCapability: "Offline, recoverable media pipeline",
-    technologies: ["TypeScript", "CLI", "Static HTML"],
-    tags: ["TypeScript", "CLI", "Offline-first"],
-    characteristics: ["Content addressing", "Crash recovery", "Verified exports", "Offline-first"],
-    liveUrl: null,
-    sourceUrl: "https://github.com/Wizard-Gang/YarReader",
-    preview: { id: "yarreader-library", kind: "static", fixture: "synthetic-demo" },
-    caseStudy: { title: "Portable Media Pipeline" },
-    problem: "A single folder may contain comics, ebooks, PDFs, loose images, duplicate editions, and half-finished downloads. YarReader must protect the original files, recover after an interruption, and never replace the working library with an incomplete copy.",
-    built: [
-      "Readers for six common source types, including comic archives, ebooks, PDFs, and image folders",
-      "A SHA-256 digital fingerprint for every file, so renamed copies can still be recognized",
-      "Optional AI suggestions that must pass format checks and receive human approval",
-      "A work journal that lets long copy and archive jobs continue after a crash",
-      "The same page-conversion rules every time, producing versioned WebP images",
-      "A complete new library is checked before it replaces the old one; the finished reader needs no server"
-    ],
-    architecture: [
-      ["Inspect", "Open each source safely and record what it contains"],
-      ["Identify", "Match the book using rules first, optional AI second, and a person when needed"],
-      ["Convert", "Turn pages into consistent images with digital fingerprints"],
-      ["Publish", "Check the entire new library before making it the active copy"]
-    ],
-    engineering: "All difficult work—opening formats, checking files, and converting pages—happens before the reader opens. The finished library is ordinary HTML and images with local links, so it can be copied to a drive and used without internet access.",
-    result: "If a copy or conversion stops, YarReader continues from its work journal. Different editions keep clear identities. Every finished library is checked before use and never changes afterward. If generated files are lost, they can be rebuilt from the protected originals and catalog.",
-    narrative: {
-      tagline: "A portable media library that works without a server.",
-      what: "A browser-based reading experience backed by a crash-recoverable pipeline that converts mixed publication formats into a verified, self-contained offline library.",
-      why: "Portable archives fail when readers depend on a database, a network, or fragile application state. YarReader pushes complexity into the build pipeline so the activated library stays ordinary, durable, and movable.",
-      highlights: ["CBZ, CBR, EPUB, PDF, and image adapters", "Content-addressed normalization", "Crash-recoverable transactions", "Immutable static exports with an offline reader"]
-    },
-  }
 ] as const satisfies readonly ProjectRecord[];
 
 

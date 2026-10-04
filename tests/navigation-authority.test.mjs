@@ -23,7 +23,6 @@ const expectedNavigation = [
     href: "/projects/",
     items: [
       { label: "Hexframe", href: "/projects/hexframe/" },
-      { label: "YarReader", href: "/projects/yarreader/" }
     ]
   },
   { key: "about", label: "About", href: "/about/" }

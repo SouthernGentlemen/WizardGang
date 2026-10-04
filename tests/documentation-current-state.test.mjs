@@ -78,7 +78,6 @@ test("README documents the current entry points and acceptance gate", async () =
     "/solutions/",
     "/projects/",
     "/projects/hexframe/",
-    "/projects/yarreader/",
     "/about/"
   ]) {
     assert.ok(readme.includes(route), `README must document the canonical route ${route}`);
