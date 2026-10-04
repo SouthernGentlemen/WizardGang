@@ -208,7 +208,14 @@ test("typed data and styling authorities remain singular and internally valid", 
   assert.ok(professionalSkills.length > 0);
   assert.equal(new Set(professionalIntegrationEvidence.map((group) => group.title)).size, professionalIntegrationEvidence.length, "integration group titles must be unique");
   assert.equal(new Set(professionalSystemEvidence.map((group) => group.title)).size, professionalSystemEvidence.length, "system group titles must be unique");
-  for (const deployment of deployments) assertHttpsUrl(deployment.url, `deployment ${deployment.name}`);
+  assert.deepEqual(
+    deployments.filter(({ url }) => !url).map(({ name }) => name),
+    ["Amware", "BuySeasons"],
+    "only deployments with dead public sites may be unlinked"
+  );
+  for (const deployment of deployments) {
+    if (deployment.url) assertHttpsUrl(deployment.url, `deployment ${deployment.name}`);
+  }
   for (const group of professionalIntegrationEvidence) {
     for (const item of group.items) if (item.url) assertHttpsUrl(item.url, `${group.title}: ${item.name}`);
   }
