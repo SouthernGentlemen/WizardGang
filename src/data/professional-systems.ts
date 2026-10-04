@@ -6,7 +6,6 @@ export interface ExternalReference {
 }
 
 export interface DeploymentReference extends ExternalReference {
-  url: string;
   /** What was delivered for this organization. */
   solution: string;
   /** The employer the work was performed under. Never WizardGang. */
@@ -47,9 +46,9 @@ export const deployments: readonly DeploymentReference[] = [
   { name: "Horry County Probate Court", url: "https://www.google.com/maps/search/?api=1&query=Horry+County+Probate+Court", solution: "Probate Case Management", employer: "Spartan Technology Solutions" },
   { name: "Spartanburg County Probate Court", url: "https://www.google.com/maps/search/?api=1&query=Spartanburg+County+Probate+Court", solution: "Probate Case Management", employer: "Spartan Technology Solutions" },
   { name: "A Beka Book", url: "https://www.abeka.com/", solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
-  { name: "Amware", url: "https://www.amware.net/", solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
+  { name: "Amware", url: null, solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
   { name: "Bulk Reef Supply", url: "https://www.bulkreefsupply.com/", solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
-  { name: "BuySeasons", url: "https://www.buyseasons.com/", solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
+  { name: "BuySeasons", url: null, solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
   { name: "Dot Foods", url: "https://www.dotfoods.com/", solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
   { name: "IPSY", url: "https://www.ipsy.com/", solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
   { name: "Plexus Worldwide", url: "https://plexusworldwide.com/", solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
