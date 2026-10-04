@@ -7,11 +7,10 @@
 /solutions/              capabilities, then the professional record
 /projects/               project index
 /projects/hexframe/      case study
-/projects/yarreader/     case study
 /about/                  the pitch, the person, the career record
 ```
 
-Navigation is Solutions, Projects, About. Solutions and Projects link to their index pages and open their menus on hover or keyboard focus; contact is in the footer. These six routes are the whole site: retired paths return the ordinary 404. The generated 404 is noindex and is not a sitemap entry.
+Navigation is Solutions, Projects, About. Solutions and Projects link to their index pages and open their menus on hover or keyboard focus; contact is in the footer. These five routes are the whole site: retired paths return the ordinary 404. The generated 404 is noindex and is not a sitemap entry.
 
 The Worker keeps only what was never a page here — `/github`, `/compliance`, `/accessibility` and `/security` point outward. Everything else falls through to the site's assets and ordinary 404 behavior.
 

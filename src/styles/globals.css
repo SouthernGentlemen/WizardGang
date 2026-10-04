@@ -2152,167 +2152,6 @@ html:has(.nav-toggle[aria-expanded="true"]) { overflow: hidden; }
   to { transform: translateX(calc(1600% + 32px)); }
 }
 
-/* The library shelf, in YarReader's own tokens from src/viewer/reader.css. */
-.yar-preview {
-  display: grid;
-  align-content: start;
-  padding: .9rem 1rem 1rem;
-  gap: .55rem;
-  background: #0e0f12;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
-
-.yar-head {
-  display: grid;
-  align-items: center;
-  padding-bottom: .55rem;
-  border-bottom: 1px solid #262a33;
-  gap: .6rem;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-}
-
-.yar-id strong {
-  display: block;
-  color: #e8eaf0;
-  font-size: .82rem;
-  font-weight: 700;
-}
-
-.yar-id span {
-  display: block;
-  margin-top: 1px;
-  color: #c8cedb;
-  font-size: .55rem;
-}
-
-.yar-search,
-.yar-select {
-  padding: .42rem .6rem;
-  border: 1px solid #262a33;
-  border-radius: 10px;
-  background: #17191f;
-  color: #c8cedb;
-  font-size: .6rem;
-}
-
-.yar-select { color: #e8eaf0; }
-.yar-select-small { font-size: .55rem; }
-
-.yar-filters,
-.yar-scope {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: .35rem;
-}
-
-.yar-label {
-  margin-right: .15rem;
-  color: #c8cedb;
-  font-size: .5rem;
-  font-weight: 600;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-}
-
-.yar-label-genre { margin-left: auto; }
-
-.yar-pill {
-  padding: .3rem .58rem;
-  border: 1px solid #262a33;
-  border-radius: 999px;
-  background: #17191f;
-  color: #c8cedb;
-  font-size: .56rem;
-}
-
-.yar-pill-on {
-  border-color: #6ea8fe;
-  background: rgb(110 168 254 / 16%);
-  color: #e8eaf0;
-  font-weight: 600;
-}
-
-.yar-scope em {
-  margin-left: auto;
-  color: #c8cedb;
-  font-size: .55rem;
-  font-style: normal;
-}
-
-.yar-grid {
-  display: grid;
-  gap: .5rem;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-}
-
-.yar-card {
-  display: flex;
-  overflow: hidden;
-  flex-direction: column;
-  border: 1px solid #262a33;
-  border-radius: 10px;
-  background: #17191f;
-}
-
-.yar-art {
-  position: relative;
-  display: grid;
-  aspect-ratio: 2 / 3;
-  background: #08090b;
-  place-items: center;
-}
-
-.yar-art b {
-  color: #9aa1b1;
-  font-size: 1.3rem;
-  font-weight: 700;
-  letter-spacing: .05em;
-}
-
-.yar-art i {
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-  padding: 1px 5px;
-  border-radius: 999px;
-  background: rgb(0 0 0 / 72%);
-  color: #fff;
-  font-size: .46rem;
-  font-style: normal;
-  font-variant-numeric: tabular-nums;
-}
-
-.yar-body {
-  display: flex;
-  flex-direction: column;
-  padding: .38rem .4rem .45rem;
-  gap: 1px;
-  min-width: 0;
-}
-
-.yar-body span {
-  overflow: hidden;
-  color: #c8cedb;
-  font-size: .44rem;
-  letter-spacing: .06em;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.yar-body strong {
-  color: #e8eaf0;
-  font-size: .6rem;
-  font-weight: 600;
-}
-
-.yar-body em {
-  color: #c8cedb;
-  font-size: .46rem;
-  font-style: normal;
-}
-
 .fighter-p1 {
   --body: #a8cf46;
   --near: #c4ed64;
@@ -2333,31 +2172,6 @@ html:has(.nav-toggle[aria-expanded="true"]) { overflow: hidden; }
 
 .preview-with-data { display: contents; }
 
-.yar-art {
-  --cover-x: 0%;
-  --cover-y: 0%;
-  overflow: hidden;
-  isolation: isolate;
-}
-
-.yar-art::before {
-  position: absolute;
-  inset: -3px;
-  z-index: -1;
-  background-image: linear-gradient(rgb(6 7 10 / 34%), rgb(6 7 10 / 58%)), url("/yarreader-library-art.jpg");
-  background-position: var(--cover-x) var(--cover-y);
-  background-size: 300% 200%;
-  content: "";
-  filter: blur(1.8px) saturate(.72);
-}
-
-.yar-art-1 { --cover-x: 50%; }
-.yar-art-2 { --cover-x: 100%; }
-.yar-art-3 { --cover-y: 100%; }
-.yar-art-4 { --cover-x: 50%; --cover-y: 100%; }
-.yar-art-5 { --cover-x: 100%; --cover-y: 100%; }
-.yar-art i { z-index: 1; }
-
 /* Compact frames drop the chrome that would be unreadable at their size and
    keep the moving part. Container widths, so a preview inside a phone card
    and one leading a desktop case study each get the right amount. */
@@ -2366,18 +2180,6 @@ html:has(.nav-toggle[aria-expanded="true"]) { overflow: hidden; }
   .lab-player small { display: none; }
   .lab-tl dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .lab-legend { display: none; }
-}
-
-@container (width < 52rem) {
-  .yar-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .yar-card:nth-child(n+5) { display: none; }
-}
-
-@container (width < 36rem) {
-  .yar-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .yar-card:nth-child(n+4) { display: none; }
-  .yar-head { grid-template-columns: minmax(0, 1fr) auto; }
-  .yar-search { display: none; }
 }
 
 /* Project motion starts on and remains user-controlled: previews are paused
@@ -2455,14 +2257,6 @@ html:has(#text-size-200:checked) :where(.work-tags > span, .work-tags > li, .ind
    refuse to shrink. The previews keep their proportions; only their densest
    grids relax. */
 html:has(#text-size-200:checked) :where(.project-visual, .project-visual > *, .lab-stage) { min-width: 0; }
-html:has(#text-size-200:checked) .yar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-html:has(#text-size-200:checked) .yar-body span {
-  overflow: visible;
-  white-space: normal;
-  text-overflow: clip;
-}
-
 /* ---------------------------------------------------------------------------
    System preferences: more contrast, forced colours, reduced motion
    --------------------------------------------------------------------------- */

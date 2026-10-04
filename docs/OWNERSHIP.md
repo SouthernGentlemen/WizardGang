@@ -6,7 +6,6 @@ This repository owns the public `wizardgang.ai` company site. Product runtimes a
 | --- | --- | --- |
 | `wizardgang.ai` | [`Wizard-Gang/WizardGang`](https://github.com/Wizard-Gang/WizardGang) | Owns company pages, typed site data, project metadata/presentation, static assets, canonical route generation, and the stateless compatibility Worker |
 | `hexframe.wizardgang.ai` | [`Wizard-Gang/Hexframe`](https://github.com/Wizard-Gang/Hexframe) | Main site describes and links to the product; Hexframe owns its runtime, simulation, content, tests, releases, and deployment |
-| YarReader offline product | [`Wizard-Gang/YarReader`](https://github.com/Wizard-Gang/YarReader) | Main site describes and links to the project; YarReader owns ingestion, conversion, offline export/reader behavior, tests, releases, and recovery records |
 | `demo.wizardgang.ai` | external Demo Framework application | Main site explains the framework and links outward; the demo system owns its detailed architecture, executable demonstrations, assurance/security surfaces, and operational evidence |
 
 ## Company and professional ownership

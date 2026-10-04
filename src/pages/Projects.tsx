@@ -8,7 +8,7 @@ export const PROJECTS_PAGE: ReactPageDefinition = {
   relative: "projects/index.html",
   metadata: {
     title: "Projects — WizardGang",
-    description: "Hexframe and YarReader: open-source software WizardGang builds and operates, with source, case studies and live applications where available.",
+    description: "Hexframe: open-source software WizardGang builds and operates, with source, case study and a live application.",
     path: PROJECTS_ROOT,
     socialImage: "/og.jpg"
   },

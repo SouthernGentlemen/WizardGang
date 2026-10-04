@@ -2,14 +2,6 @@
 
 ## Open tasks
 
-### WG-123 — [CONTENT] Remove YarReader from the site
-
-- Why: YarReader is retiring (owner decision 2026-10-02) and has no Cloudflare footprint, but 19 tracked files on `ad3f0db` still describe or link it.
-- Scope: Remove YarReader's projects, pages, data, assets, links and tests from the site, and update every current-state document that mentions it. Old YarReader paths on the site return the normal 404.
-- Non-goals: No other content change and no release. The removal ships with WG-125.
-- Acceptance: `git grep -i yarreader` finds nothing outside controlled history, and the built site has no YarReader page, link or asset.
-- Validation: Pinned `npm ci`, focused generated-site and documentation tests, canonical check, `git diff --check` and exact-head CI.
-
 ### WG-124 — [OPS] Adopt the shared wg-edge shell and the baseline deploy workflow
 
 - Dependency: Wizard-Gang/baseline BASE-028 merged. The shared Cloudflare resources were provisioned on 2026-10-04 (Phase 3 of `docs/CLOUDFLARE-RUNBOOK.md`).
@@ -26,7 +18,7 @@
 
 ### WG-125 — [RELEASE] Release the wizardgang Worker cut-over as v1.3.0
 
-- Dependency: WG-123 and WG-124 merged.
+- Dependency: WG-124 merged.
 - Why: The first deploy through `deploy-worker.yml` creates the `wizardgang` Worker and moves both custom domains from `wizardgang-portfolio`.
 - Scope: Cut annotated `v1.3.0` through the release process and deploy it through `deploy-worker.yml`. Before deploying, check how the locked wrangler treats custom domains still attached to `wizardgang-portfolio`. If it refuses non-interactively, the owner detaches them from the old Worker immediately before the deploy.
 - Acceptance: The new version serves 100% of traffic. `https://wizardgang.ai/version.json` reports `wizardgang`, `1.3.0` and the tag commit, and `www.wizardgang.ai` answers with the shell's 308 to the apex. `npm run verify:cloudflare` in baseline lists no missing `Worker wizardgang` and no custom-domain drift for either host.
