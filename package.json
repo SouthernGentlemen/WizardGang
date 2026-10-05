@@ -3,6 +3,12 @@
   "version": "1.2.2",
   "private": true,
   "type": "module",
+  "imports": {
+    "#wg-edge": {
+      "types": "./platform/wg-edge/index.d.ts",
+      "default": "./platform/wg-edge/index.mjs"
+    }
+  },
   "packageManager": "npm@12.1.0",
   "engines": {
     "node": "26.x",
@@ -11,14 +17,15 @@
   "allowScripts": {
     "esbuild@0.28.1": true,
     "fsevents@2.3.3": true,
-    "workerd@1.20260926.1": true
+    "workerd@1.20261001.1": true
   },
   "description": "Static company site for WizardGang at wizardgang.ai.",
   "scripts": {
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "check:frontend": "npm run typecheck && npm run build && node scripts/verify-react-shell.mjs",
-    "check": "npm run test:plan-queue && npm run check:frontend && node scripts/verify.mjs && npm run test:github-settings && npm run test:release-tag && npm run test:deployment-boundary && npm run test:release-deployment && npm run check:history && npm run test:public-secrets && npm run check:public-secrets && npm run check:patch-integrity",
+    "check": "npm run test:plan-queue && npm run check:platform && npm run check:frontend && node scripts/verify.mjs && npm run test:github-settings && npm run test:release-tag && npm run test:deployment-boundary && npm run test:release-deployment && npm run check:history && npm run test:public-secrets && npm run check:public-secrets && npm run check:patch-integrity",
+    "check:platform": "node platform/conformance/cli.mjs pin && node platform/conformance/cli.mjs wrangler --worker wizardgang",
     "test:public-secrets": "node --test scripts/public-secret-cases.mjs",
     "check:public-secrets": "node scripts/check-public-secrets.mjs",
     "test:plan-queue": "node scripts/check-portfolio-contract.mjs",
@@ -33,12 +40,8 @@
     "audit:dependencies": "npm audit --audit-level=high",
     "security:dependency-advisories": "npm run audit:dependencies",
     "test:dev": "node --test tests/dev-lifecycle.test.mjs",
-    "secrets:cloudflare:discover": "bash scripts/discover-cloudflare-api-token-targets.sh",
-    "secrets:cloudflare:rotate": "bash scripts/rotate-cloudflare-api-token.sh",
     "dev": "node scripts/dev.mjs",
-    "deploy:staging": "npm run build && wrangler deploy --env staging",
-    "deploy:staging:dry-run": "npm run build && wrangler deploy --dry-run --env staging",
-    "deploy:production:dry-run": "npm run build && wrangler deploy --dry-run --env production",
+    "deploy:dry-run": "npm run build && wrangler deploy --dry-run --experimental-provision=false --outdir tmp/dry-run",
     "test:browser": "node --test tests/browser-behavior.test.mjs",
     "test:accessibility": "node --test tests/accessibility-contract.test.mjs",
     "test:docs": "node --test tests/documentation-current-state.test.mjs",
@@ -61,6 +64,6 @@
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
     "vite": "8.3.1",
-    "wrangler": "4.144.0"
+    "wrangler": "4.147.0"
   }
 }

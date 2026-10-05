@@ -12,7 +12,7 @@
 
 Navigation is Solutions, Projects, About. Solutions and Projects link to their index pages and open their menus on hover or keyboard focus; contact is in the footer. These five routes are the whole site: retired paths return the ordinary 404. The generated 404 is noindex and is not a sitemap entry.
 
-The Worker keeps only what was never a page here — `/github`, `/compliance`, `/accessibility` and `/security` point outward. Everything else falls through to the site's assets and ordinary 404 behavior.
+The Worker keeps only what was never a page here — `/github`, `/compliance`, `/accessibility` and `/security` point outward. Everything else falls through to the site's assets and ordinary 404 behavior. `www.wizardgang.ai` redirects to the apex.
 
 **[Live site](https://wizardgang.ai)** · **[Solutions](https://wizardgang.ai/solutions/)** · **[Projects](https://wizardgang.ai/projects/)**
 
@@ -25,12 +25,12 @@ React + TypeScript page composition
 → typed page registry
 → Vite static build
 → complete HTML + generated CSS/browser module
-→ Cloudflare assets + TypeScript Worker
+→ Cloudflare assets behind the wg-edge Worker shell
 ```
 
 React renders complete static documents during the build. There is no client React hydration and no SPA router. Browser TypeScript progressively enhances language, display preferences, and mobile navigation.
 
-The TypeScript Worker owns the outward shortcuts that cannot be expressed as static assets alone; all other requests fall through to Cloudflare assets. Wrangler owns local runtime and Cloudflare deployment configuration.
+The site runs as the `wizardgang` Worker on baseline's shared `wg-edge` shell, vendored verbatim under `platform/` and pinned by `platform/vendor.lock.json`. The shell runs before the assets on every request. It owns the host guard, the `www` → apex 308, TLS, `/version.json`, `/health.json`, `/robots.txt`, the `/admin` operator gate, security headers and errors. The TypeScript Worker adds the outward shortcuts and serves everything else from Cloudflare assets. Never edit `platform/`; re-vendor it from a merged baseline commit instead.
 
 ## Presentation
 
@@ -66,7 +66,7 @@ npm run dev
 3. runs the production static build;
 4. sanitizes only the generated local `dist/_headers` copy for plain HTTP;
 5. starts Vite build watch;
-6. starts `wrangler dev --local` at `http://127.0.0.1:8790`;
+6. starts `wrangler dev --local` at `http://127.0.0.1:8790`, presenting requests to the Worker as `https://wizardgang.ai` so the shell's host guard admits them;
 7. waits for the Wrangler-served site to respond;
 8. opens the local URL and remains attached to both required child processes.
 
@@ -94,7 +94,7 @@ Build the complete static site:
 npm run build
 ```
 
-The build emits the static HTML pages, public assets, generated CSS/browser JavaScript, `sitemap.xml` and `version.json` into `dist/`. The sitemap is a projection of the page registry, never a second route list.
+The build emits the static HTML pages, public assets, generated CSS/browser JavaScript and `sitemap.xml` into `dist/`. The sitemap is a projection of the page registry, never a second route list. It also writes the Worker entry `build/worker.mjs`, which hands the shell the release it serves at `/version.json`. A plain build is `0.0.0-dev` at the checked-out commit. Baseline's deploy workflow builds with `WG_VERSION` and `WG_COMMIT`, which must match `package.json` and the checkout.
 
 The authoritative repository acceptance gate is:
 
@@ -102,7 +102,7 @@ The authoritative repository acceptance gate is:
 npm run check
 ```
 
-It includes strict TypeScript checking, the production build, frontend-architecture authority, generated-page contracts, accessibility, browser behavior, project and solution ownership, Worker routing, local-development lifecycle, metadata, links, security/header boundaries, and bounded tracked-file and reachable-history credential scanning.
+It includes the vendored `platform/` pin and `wrangler.jsonc` conformance checks (`npm run check:platform`), strict TypeScript checking, the production build, frontend-architecture authority, generated-page contracts, accessibility, browser behavior, project and solution ownership, Worker routing, local-development lifecycle, metadata, links, security/header boundaries, and bounded tracked-file and reachable-history credential scanning.
 
 Useful focused checks include:
 
@@ -123,7 +123,8 @@ src/
   data/        typed content authorities
   pages/       canonical React page bodies
   styles/      design tokens and production CSS
-  worker/      Cloudflare runtime routing
+  worker/      the site's handler inside the wg-edge shell
+platform/      baseline's shared Worker shell, conformance and deploy checks (vendored, never edited)
 scripts/       build, local development, verification, maintenance
 tests/         repository acceptance
 public/        deployable static assets, fonts, and production headers
@@ -142,10 +143,10 @@ Key authorities:
 - `src/data/team.ts`, `src/data/professional.ts`, `src/data/professional-systems.ts` — people, career history, and attributed evidence.
 - `src/components/ProjectSurfaces.tsx` — shared project presentation contract.
 - `src/app/Document.tsx` — static document, metadata, and sitemap composition.
-- `src/worker/index.ts` — outward shortcuts and asset fallback.
+- `src/worker/index.ts` — outward shortcuts, robots policy and asset fallback inside the shell.
 - `src/styles/tokens.css` — the design system.
 - `vite.config.ts` — static build pipeline.
-- `wrangler.jsonc` — local/staging/production Cloudflare configuration.
+- `wrangler.jsonc` — the one top-level `wizardgang` Worker config, checked against baseline's conformance rules.
 
 ## Documentation
 
@@ -157,14 +158,13 @@ Key authorities:
 
 ## Deployment
 
-Cloudflare environments are defined in `wrangler.jsonc`. Validate deploy packaging without publishing:
+`wrangler.jsonc` declares the one `wizardgang` Worker: custom domains `wizardgang.ai` and `www.wizardgang.ai`, the assets and the shared `WG_OPS_TOKEN` and `WG_SESSION_KEY` from the Secrets Store. There is no staging Worker. Validate deploy packaging without publishing:
 
 ```bash
-npm run deploy:staging:dry-run
-npm run deploy:production:dry-run
+npm run deploy:dry-run
 ```
 
-Staging can still be published explicitly with `npm run deploy:staging`. Production has no checkout-owned deploy command. Canonical CI waits for the exact immutable GitHub Release, re-verifies that released tag, enters the protected `production` environment, and then deploys that exact state with Wrangler. A deliberate `main` workflow dispatch can recover an existing published release by supplying its tag and exact accepted commit; it cannot create a new Release. CI records Wrangler's structured Worker Version ID, verifies Cloudflare is serving that version at 100% of production traffic, and requires public `version.json` to report the same release and commit. Production deployments serialize rather than cancelling an in-progress deploy.
+Production has no checkout-owned deploy command. Canonical CI waits for the exact immutable GitHub Release, then calls baseline's `deploy-worker.yml`, pinned to the same baseline commit as `platform/`, with the tag and its commit. It passes no secrets. That workflow re-verifies the tag and runs `npm run check` and the conformance checks. It then enters this repository's protected `production` environment and deploys with the locked Wrangler. It confirms that the new version serves 100% of traffic and that public `/version.json` reports `wizardgang`, the release version and the tag commit. A deliberate `main` workflow dispatch can recover an existing published release by supplying its tag and exact accepted commit; it cannot create a new Release. Rollback redeploys the previous tag the same way. Cloudflare tokens are minted, rotated and discovered with baseline's runbooks and tooling, not from this repository.
 
 ## GitHub auto-merge
 

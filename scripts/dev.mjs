@@ -327,8 +327,9 @@ async function writeRuntimeState(runtimeFile, state) {
   await writeFile(runtimeFile, `${JSON.stringify(state, null, 2)}\n`, { flag: "w" });
 }
 
+// Wrangler presents requests as https://wizardgang.ai, so the shell's host guard and TLS rule admit them.
 export function buildWranglerArgs(wranglerCli, port) {
-  return [wranglerCli, "dev", "--local", "--ip", DEV_HOST, "--port", String(port)];
+  return [wranglerCli, "dev", "--local", "--ip", DEV_HOST, "--port", String(port), "--upstream-protocol", "https"];
 }
 
 export function buildFrontendWatchArgs(frontendCli, viteConfig) {

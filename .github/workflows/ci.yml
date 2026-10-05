@@ -153,80 +153,12 @@ jobs:
       always() && needs.verify.result == 'success' && needs.release.result == 'success' &&
       ((github.event_name == 'push' && needs.release-tag.result == 'success' && needs.release-tag.outputs.tag != '') ||
        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
-    environment: production
-    concurrency:
-      group: wizardgang-production
-      cancel-in-progress: false
     permissions:
       contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
-          fetch-depth: 0
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version-file: .node-version
-          cache: npm
-      - name: Pin npm
-        run: npm install --global npm@12.1.0
-      - name: Install exact released dependencies
-        run: npm ci
-      - name: Check exact released state
-        run: npm run check
-      - name: Verify exact release identity
-        env:
-          RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
-          EXPECTED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_commit || github.sha }}
-        run: |
-          set -euo pipefail
-          npm run verify:release-identity -- "$RELEASE_TAG"
-          [[ "$EXPECTED_COMMIT" =~ ^[0-9a-f]{40}$ ]]
-          test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
-          git fetch origin refs/heads/main:refs/remotes/origin/main
-          git merge-base --is-ancestor "$EXPECTED_COMMIT" refs/remotes/origin/main
-      - name: Verify published GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test "$(gh release view "$RELEASE_TAG" --json tagName --jq '.tagName')" = "$RELEASE_TAG"
-          test "$(gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft')" = "false"
-          test "$(gh release view "$RELEASE_TAG" --json isPrerelease --jq '.isPrerelease')" = "false"
-      - name: Build exact released state
-        run: npm run build
-      - name: Deploy exact published release to Cloudflare
-        id: deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          WRANGLER_OUTPUT_FILE: ${{ runner.temp }}/wrangler-output.jsonl
-          WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.jsonl
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -n "$CLOUDFLARE_API_TOKEN"
-          ./node_modules/.bin/wrangler deploy --env production
-          version_id="$(node scripts/production-deployment-identity.mjs deployed-version "$WRANGLER_OUTPUT_FILE")"
-          echo "version_id=$version_id" >> "$GITHUB_OUTPUT"
-      - name: Confirm deployed Cloudflare version is serving production
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          EXPECTED_VERSION_ID: ${{ steps.deploy.outputs.version_id }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          deployments="$RUNNER_TEMP/cloudflare-deployments.json"
-          ./node_modules/.bin/wrangler deployments list --env production --json > "$deployments"
-          node scripts/production-deployment-identity.mjs provider "$deployments" "$EXPECTED_VERSION_ID"
-      - name: Verify public release identity
-        env:
-          EXPECTED_RELEASE: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
-          EXPECTED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_commit || github.sha }}
-        run: >-
-          node scripts/production-deployment-identity.mjs public
-          https://wizardgang.ai/version.json
-          "$EXPECTED_RELEASE"
-          "$EXPECTED_COMMIT"
+    # Baseline's one tag-to-production path, pinned to a merged baseline commit. It reads the Cloudflare
+    # credentials from this repository's production environment itself, so no secret is passed or inherited.
+    uses: Wizard-Gang/baseline/.github/workflows/deploy-worker.yml@da151bf06df1e888657ea032ce130583c6785bdd
+    with:
+      worker: wizardgang
+      tag: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
+      expected_sha: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_commit || github.sha }}

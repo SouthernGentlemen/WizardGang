@@ -1,112 +1,61 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 import {
-  extractDeployedVersionId,
-  fetchPublicReleaseIdentity,
-  verifyPublicReleaseIdentity,
-  verifyServingDeployment,
-} from "../scripts/production-deployment-identity.mjs";
+  DEVELOPMENT_VERSION,
+  WORKER_ENTRY_RELATIVE,
+  renderWorkerEntry,
+  resolveWorkerRelease,
+} from "../scripts/worker-release.mjs";
 
-const workflow = readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
-const versionId = "12345678-1234-1234-1234-1234567890ab";
-const otherVersionId = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+const root = new URL("..", import.meta.url);
 
-function jobBlock(jobName) {
-  const start = new RegExp(`^  ${jobName}:\\s*$`, "m").exec(workflow);
-  if (!start) return "";
-  const after = workflow.slice(start.index + start[0].length);
-  const next = /^  [A-Za-z0-9_-]+:\s*$/m.exec(after);
-  return next ? after.slice(0, next.index) : after;
+async function repo(version = "1.3.0") {
+  const cwd = await mkdtemp(join(tmpdir(), "wg-release-"));
+  const git = (...args) => execFileSync("git", args, { cwd, encoding: "utf8" }).trim();
+  git("init", "-q");
+  await writeFile(join(cwd, "package.json"), JSON.stringify({ version }));
+  git("add", "package.json");
+  git("-c", "user.name=t", "-c", "user.email=t@example.com", "commit", "-qm", "init");
+  return { cwd, head: git("rev-parse", "HEAD"), cleanup: () => rm(cwd, { recursive: true, force: true }) };
 }
 
-test("structured Wrangler deploy output yields the exact Worker Version ID", () => {
-  const output = [
-    JSON.stringify({ type: "wrangler-session", version: 1 }),
-    JSON.stringify({ type: "deploy", version: 1, worker_name: "wizardgang-portfolio", version_id: versionId }),
-  ].join("\n");
-
-  assert.equal(extractDeployedVersionId(output), versionId);
-  assert.throws(
-    () => extractDeployedVersionId(JSON.stringify({ type: "deploy", version_id: "not-a-version" })),
-    /Version ID/,
-  );
-  assert.throws(() => extractDeployedVersionId(""), /Version ID/);
+test("a build without WG_VERSION and WG_COMMIT is a development release of the checked-out commit", async () => {
+  const { cwd, head, cleanup } = await repo();
+  try {
+    assert.deepEqual(resolveWorkerRelease({ cwd, env: {} }), { version: DEVELOPMENT_VERSION, commit: head });
+  } finally {
+    await cleanup();
+  }
 });
 
-test("provider evidence requires the newest deployment to serve only the captured version at 100 percent", () => {
-  const deployments = [
-    { id: "older", created_on: "2026-09-20T00:00:00Z", versions: [{ version_id: otherVersionId, percentage: 100 }] },
-    { id: "current", created_on: "2026-09-24T00:00:00Z", versions: [{ version_id: versionId, percentage: 100 }] },
-  ];
-  assert.equal(verifyServingDeployment(deployments, versionId).id, "current");
-
-  assert.throws(
-    () => verifyServingDeployment([{ id: "wrong", versions: [{ version_id: otherVersionId, percentage: 100 }] }], versionId),
-    /expected/,
-  );
-  assert.throws(
-    () => verifyServingDeployment([{ id: "split", versions: [
-      { version_id: versionId, percentage: 50 },
-      { version_id: otherVersionId, percentage: 50 },
-    ] }], versionId),
-    /exactly one version/,
-  );
+test("deploy-worker's WG_VERSION and WG_COMMIT become the release when they match the checkout", async () => {
+  const { cwd, head, cleanup } = await repo("1.3.0");
+  try {
+    assert.deepEqual(resolveWorkerRelease({ cwd, env: { WG_VERSION: "1.3.0", WG_COMMIT: head } }), { version: "1.3.0", commit: head });
+    assert.throws(() => resolveWorkerRelease({ cwd, env: { WG_VERSION: "1.3.0" } }), /set together/);
+    assert.throws(() => resolveWorkerRelease({ cwd, env: { WG_COMMIT: head } }), /set together/);
+    assert.throws(() => resolveWorkerRelease({ cwd, env: { WG_VERSION: "v1.3.0", WG_COMMIT: head } }), /exact semantic version/);
+    assert.throws(() => resolveWorkerRelease({ cwd, env: { WG_VERSION: "1.2.9", WG_COMMIT: head } }), /does not match package\.json/);
+    assert.throws(() => resolveWorkerRelease({ cwd, env: { WG_VERSION: "1.3.0", WG_COMMIT: head.slice(0, 12) } }), /full 40-character/);
+    assert.throws(() => resolveWorkerRelease({ cwd, env: { WG_VERSION: "1.3.0", WG_COMMIT: "f".repeat(40) } }), /checked-out commit/);
+  } finally {
+    await cleanup();
+  }
 });
 
-test("public identity fails closed on the wrong release or commit", () => {
-  const expected = { release: "v1.1.0", commit: "0123456789abcdef0123456789abcdef01234567" };
-  const payload = { product: "WizardGang", ...expected, builtAt: "2026-09-24T00:00:00.000Z" };
-  assert.equal(verifyPublicReleaseIdentity(payload, expected), payload);
-  assert.throws(() => verifyPublicReleaseIdentity({ ...payload, release: "v1.0.0" }, expected), /does not match/);
-  assert.throws(() => verifyPublicReleaseIdentity({ ...payload, commit: "wrong" }, expected), /does not match/);
+test("the built Worker entry hands the resolved release to the shell", async () => {
+  const entry = await readFile(new URL(WORKER_ENTRY_RELATIVE, root), "utf8");
+  const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+  assert.equal(entry, renderWorkerEntry(resolveWorkerRelease({ cwd: new URL(".", root).pathname, env: {} })));
+  assert.match(entry, new RegExp(`createSiteWorker\\(\\{"version":"${DEVELOPMENT_VERSION.replaceAll(".", "\\.")}","commit":"${head}"\\}\\)`));
 });
 
-test("public verification retries stale edge identity before accepting the exact release", async () => {
-  const expected = { release: "v1.1.0", commit: "0123456789abcdef0123456789abcdef01234567" };
-  let calls = 0;
-  const fetchImpl = async () => ({
-    ok: true,
-    status: 200,
-    text: async () => JSON.stringify(calls++ === 0
-      ? { release: "v1.0.0", commit: "old" }
-      : expected),
-  });
-
-  const payload = await fetchPublicReleaseIdentity({
-    url: "https://wizardgang.ai/version.json",
-    ...expected,
-    fetchImpl,
-    attempts: 2,
-    retryDelayMs: 0,
-    sleep: async () => {},
-  });
-  assert.equal(calls, 2);
-  assert.equal(payload.release, expected.release);
-});
-
-test("canonical release publication precedes deployment, provider confirmation, and public identity", () => {
-  const release = jobBlock("release");
-  const deploy = jobBlock("deploy-production");
-  assert.ok(release);
-  assert.ok(deploy);
-  assert.match(deploy, /^    needs: \[verify, release-tag, release\]$/m);
-
-  const providerRelease = deploy.indexOf("Verify published GitHub Release");
-  const publish = deploy.indexOf("./node_modules/.bin/wrangler deploy --env production");
-  const provider = deploy.indexOf("production-deployment-identity.mjs provider");
-  const publicIdentity = deploy.indexOf("production-deployment-identity.mjs public");
-
-  assert.ok(providerRelease >= 0);
-  assert.ok(publish > providerRelease);
-  assert.ok(provider > publish);
-  assert.ok(publicIdentity > provider);
-  assert.match(deploy, /WRANGLER_OUTPUT_FILE:/);
-  assert.match(deploy, /WRANGLER_OUTPUT_FILE_PATH:/);
-  assert.match(deploy, /wrangler deployments list --env production --json/);
-  assert.match(deploy, /EXPECTED_VERSION_ID: \$\{\{ steps\.deploy\.outputs\.version_id \}\}/);
-  assert.match(deploy, /EXPECTED_RELEASE: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.release_tag \|\| needs\.release-tag\.outputs\.tag \}\}/);
-  assert.match(deploy, /EXPECTED_COMMIT: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.expected_commit \|\| github\.sha \}\}/);
-  assert.match(release, /gh release create/);
-  assert.doesNotMatch(release, /wrangler deploy/);
+test("wrangler deploys the generated entry", async () => {
+  const wrangler = await readFile(new URL("wrangler.jsonc", root), "utf8");
+  assert.match(wrangler, new RegExp(`^  "main": "${WORKER_ENTRY_RELATIVE}",$`, "m"));
+  assert.match(await readFile(new URL(".gitignore", root), "utf8"), /^build\/$/m);
 });

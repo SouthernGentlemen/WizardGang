@@ -108,8 +108,8 @@ React + TypeScript
 → typed page registry
 → Vite build
 → static HTML + assets in dist/
-→ Cloudflare static assets
-→ TypeScript Worker for runtime routing boundaries
+→ wg-edge Worker shell (host guard, www redirect, built-ins, headers)
+→ TypeScript site handler: outward shortcuts, then Cloudflare static assets
 ```
 
 ### React and TypeScript
@@ -124,11 +124,11 @@ The browser does not hydrate a React application. There is no SPA router. Static
 
 ### Build and styling
 
-`npm run build` invokes Vite through `scripts/build.mjs`. Vite compiles the server-side renderer, processes the stylesheets, emits the browser module, copies public assets, renders the page registry, writes `version.json` and the generated `sitemap.xml`, then publishes the tree into `dist/`.
+`npm run build` invokes Vite through `scripts/build.mjs`. Vite compiles the server-side renderer, processes the stylesheets, emits the browser module, copies public assets, renders the page registry, writes the generated `sitemap.xml`, then publishes the tree into `dist/`. Before Vite runs, `scripts/build.mjs` writes the Worker entry `build/worker.mjs` with the release from `WG_VERSION` and `WG_COMMIT` (`0.0.0-dev` at the checked-out commit when they are unset).
 
 ### Worker and Cloudflare
 
-`src/worker/index.ts` is the Wrangler entry point and owns the outward shortcut redirects before asset fallback. `wrangler.jsonc` defines local, staging, and production configuration. Production serves `wizardgang.ai` as a custom domain.
+The site is the `wizardgang` Worker on baseline's `wg-edge` shell, vendored under `platform/` and pinned by `platform/vendor.lock.json`. The generated `build/worker.mjs` is the Wrangler entry. It calls `createSiteWorker` in `src/worker/index.ts`, which hands the shell the release and the site's robots policy, then redirects the outward shortcuts and serves everything else from the assets. Because `run_worker_first` is on, the shell answers first on every path. It owns the host guard, the `www.wizardgang.ai` → apex 308, TLS, `/version.json`, `/health.json`, `/robots.txt`, the `/admin` gate, security headers and errors. `wrangler.jsonc` is the one top-level production config: custom domains `wizardgang.ai` and `www.wizardgang.ai`, the assets and the shared Secrets Store bindings. `npm run check:platform` checks it, and the vendored pin, against baseline. Production deploys only through baseline's `deploy-worker.yml`, called from CI after the Release.
 
 ## Local development
 
@@ -158,7 +158,7 @@ The enforced architecture includes:
 - direct internal canonical links, never through a redirect;
 - company and personal attribution boundaries;
 - accessibility and progressive-enhancement behavior;
-- Worker outward-shortcut behavior;
+- Worker outward-shortcut behavior and the shell's `www` redirect and `/version.json` identity;
 - metadata correctness;
 - safe checkout-scoped local development.
 
