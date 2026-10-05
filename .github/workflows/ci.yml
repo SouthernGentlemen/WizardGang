@@ -155,9 +155,11 @@ jobs:
        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
     permissions:
       contents: read
-    # Baseline's one tag-to-production path, pinned to a merged baseline commit. It reads the Cloudflare
-    # credentials from this repository's production environment itself, so no secret is passed or inherited.
-    uses: Wizard-Gang/baseline/.github/workflows/deploy-worker.yml@da151bf06df1e888657ea032ce130583c6785bdd
+    # Baseline's one tag-to-production path, pinned to a merged baseline commit. A called workflow sees only the
+    # secrets its caller passes, so the call inherits them; its deploy job reads only the production environment's
+    # Cloudflare token, and this repository keeps no repository-level secrets.
+    uses: Wizard-Gang/baseline/.github/workflows/deploy-worker.yml@67b4b86847e0d635a3f6fe4c21618a25d5bc71a0
+    secrets: inherit
     with:
       worker: wizardgang
       tag: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}

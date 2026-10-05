@@ -50,12 +50,13 @@ test("production deploys only through baseline's pinned deploy-worker workflow a
   assert.match(deploy, /^    with:\n      worker: wizardgang\n/m);
   assert.match(deploy, /^      tag: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.release_tag \|\| needs\.release-tag\.outputs\.tag \}\}$/m);
   assert.match(deploy, /^      expected_sha: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.expected_commit \|\| github\.sha \}\}$/m);
-  assert.doesNotMatch(deploy, /^    (?:secrets|steps|runs-on|environment):/m, "the call passes no secrets and runs nothing itself");
+  assert.match(deploy, /^    secrets: inherit$/m, "a called workflow sees only the secrets its caller passes");
+  assert.doesNotMatch(deploy, /^    (?:steps|runs-on|environment):/m, "the call runs nothing itself");
   assert.doesNotMatch(release, /wrangler|deploy-worker/);
 });
 
-test("no workflow inherits secrets, runs wrangler deploy or reads Cloudflare credentials", () => {
-  assert.doesNotMatch(workflow, /secrets: inherit/);
+test("only the deploy call inherits secrets, and no workflow runs wrangler deploy or reads Cloudflare credentials", () => {
+  assert.equal((workflow.match(/secrets: inherit/g) || []).length, 1, "only the deploy-worker.yml call inherits secrets");
   assert.doesNotMatch(workflow, /wrangler (?:deploy|deployments)/);
   assert.doesNotMatch(workflow, /CLOUDFLARE_(?:API_TOKEN|ACCOUNT_ID)/);
   assert.equal((workflow.match(/deploy-worker\.yml@/g) || []).length, 1, "one production deploy path");
