@@ -44,7 +44,7 @@ test("every locked install script is explicitly reviewed at its locked version",
   assert.deepEqual(reviewed, [
     "esbuild@0.28.1",
     "fsevents@2.3.3",
-    "workerd@1.20260926.1"
+    "workerd@1.20261001.1"
   ]);
   assert.deepEqual(scripted, reviewed);
 });

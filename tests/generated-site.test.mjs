@@ -29,6 +29,9 @@ import {
   walk
 } from "./helpers.mjs";
 
+// Answered by the wg-edge shell before the site, never by a static file.
+const SHELL_ROUTES = new Set(["/version.json", "/health.json", "/robots.txt"]);
+
 const ORIGIN = "https://wizardgang.ai";
 const canonicalFiles = [...CANONICAL_PAGES.keys()];
 
@@ -77,12 +80,13 @@ test("all required public build artifacts and public records exist", async () =>
     "favicon.svg",
     "site.webmanifest",
     "sitemap.xml",
-    "robots.txt",
-    "version.json",
     "og.jpg",
     "hexframe-project.jpg"
   ];
   for (const file of artifacts) assert.equal(await exists(resolve(dist, file)), true, `missing build artifact ${file}`);
+  for (const file of ["version.json", "robots.txt"]) {
+    assert.equal(await exists(resolve(dist, file)), false, `the wg-edge shell serves /${file}; a static copy would never be reached`);
+  }
   const topLevelJpgs = (await walk(dist)).map(relativeFromDist).filter((file) => !file.includes("/") && file.endsWith(".jpg")).sort();
   assert.deepEqual(topLevelJpgs, ["hexframe-project.jpg", "og.jpg"], "top-level project media must match the current site");
   assert.equal(await exists(resolve(dist, "sharktank-project.jpg")), false, "retired SharkTank image must not be emitted");
@@ -159,6 +163,7 @@ test("every canonical page preserves document, metadata, link, and local-asset b
         assert.ok(!anchor.href.startsWith("//"), `malformed protocol-relative URL ${anchor.href}`);
         const pathname = anchor.href.startsWith("/") ? new URL(anchor.href, ORIGIN).pathname : "";
         if (pathname && PERMANENT_REDIRECTS.has(pathname)) continue;
+        if (pathname && SHELL_ROUTES.has(pathname)) continue;
         const target = internalTarget(anchor.href, relative);
         if (!target) continue;
         assert.equal(await exists(resolve(dist, target.relative)), true, `broken internal link ${anchor.href}`);
@@ -201,36 +206,13 @@ test("social preview behavior remains page-appropriate", async () => {
   }
 });
 
-test("build/version evidence is present and internally consistent", async () => {
-  const version = JSON.parse(await readDist("version.json"));
-  const packageVersion = JSON.parse(await readRoot("package.json")).version;
-  assert.equal(version.product, "WizardGang");
-  assert.match(
-    version.release,
-    /^(?:0\.0\.0-dev|v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))(?:\+dirty)?$/,
-    "version.json must distinguish development from semantic release identity"
-  );
-  assert.match(version.commit, /^(?:[0-9a-f]{40}|development)$/);
-  assert.ok(Number.isFinite(Date.parse(version.builtAt)), "version.json must contain an ISO build timestamp");
-
-  const releaseTag = version.release.replace(/\+dirty$/, "");
-  if (releaseTag.startsWith("v")) {
-    assert.equal(releaseTag, `v${packageVersion}`, "release identity must match package.json");
-  }
-
-  if (version.commit !== "development") {
-    const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
-    const epoch = Number(execFileSync("git", ["show", "-s", "--format=%ct", "HEAD"], { cwd: root, encoding: "utf8" }).trim());
-    assert.equal(version.commit, head, "version.json must name the exact checked-out commit");
-    assert.equal(version.builtAt, new Date(epoch * 1000).toISOString(), "build time must derive from immutable commit metadata");
-  }
-
-  const buildLabel = version.commit === "development" ? version.commit : version.commit.slice(0, 12);
+test("every page's build label names the checked-out commit and links the shell's /version.json", async () => {
+  const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   for (const relative of canonicalFiles) {
     const html = await readDist(relative);
     const buildLink = anchorWithHref(html, "/version.json");
     assert.ok(buildLink, `${relative}: missing version evidence link`);
-    assert.equal(textContent(buildLink.inner), `Build ${buildLabel}`);
+    assert.equal(textContent(buildLink.inner), `Build ${head.slice(0, 12)}`);
   }
 });
 
@@ -557,6 +539,6 @@ test("React frontend toolchain owns the shared production shell without becoming
   assert.match(vite, /tmp\/frontend-shell/);
 
   const wrangler = await readRoot("wrangler.jsonc");
-  assert.match(wrangler, /"main":\s*"src\/worker\/index\.ts"/);
+  assert.match(wrangler, /"main":\s*"build\/worker\.mjs"/);
   assert.match(wrangler, /"directory":\s*"\.\/dist"/);
 });

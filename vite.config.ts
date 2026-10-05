@@ -172,8 +172,6 @@ function staticSitePlugin(): Plugin {
           await writeFile(target, html);
         }
 
-        await writeFile(resolve(publishOut, "version.json"), `${JSON.stringify(build, null, 2)}\n`);
-
         // The sitemap is a projection of the page registry, never a second route list.
         const sitemap = [
           '<?xml version="1.0" encoding="UTF-8"?>',

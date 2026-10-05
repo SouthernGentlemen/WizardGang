@@ -63,7 +63,7 @@ test("port override is honored and defaults to the existing repository port", ()
 test("Wrangler remains the single browser-facing local origin while Vite watches without a server port", () => {
   assert.equal(DEV_HOST, "127.0.0.1");
   assert.deepEqual(buildWranglerArgs("/repo/node_modules/wrangler/bin/wrangler.js", 8790), [
-    "/repo/node_modules/wrangler/bin/wrangler.js", "dev", "--local", "--ip", "127.0.0.1", "--port", "8790"
+    "/repo/node_modules/wrangler/bin/wrangler.js", "dev", "--local", "--ip", "127.0.0.1", "--port", "8790", "--upstream-protocol", "https"
   ]);
   assert.deepEqual(buildFrontendWatchArgs("/repo/node_modules/vite/bin/vite.js", "/repo/vite.config.ts"), [
     "/repo/node_modules/vite/bin/vite.js", "build", "--watch", "--config", "/repo/vite.config.ts"

@@ -2,7 +2,7 @@
 
 ## Supported surface
 
-Security reports are accepted for the current `wizardgang.ai` site and its stateless TypeScript Worker.
+Security reports are accepted for the current `wizardgang.ai` site and its stateless TypeScript Worker, including the vendored wg-edge shell it runs on.
 
 Hexframe and the detailed Demo Framework application are separate system boundaries. Report product-specific issues through the owning repository or operating surface.
 
@@ -14,13 +14,13 @@ Do not open a public issue for an unpatched vulnerability. Do not include passwo
 
 ## Site boundary
 
-WizardGang.ai serves generated static HTML, CSS, a first-party browser module, public media, and `version.json` through Cloudflare. It does not accept visitor accounts, passwords, payments, uploads, or form submissions.
+WizardGang.ai serves generated static HTML, CSS, a first-party browser module, public media, and the shell's `/version.json` release record through Cloudflare. It does not accept visitor accounts, passwords, payments, uploads, or form submissions.
 
 `public/_headers` is the production HTTP-header authority. It includes the production Content Security Policy and HTTPS-only controls. Local HTTP development never edits that source file; the dev lifecycle sanitizes only the generated `dist/_headers` copy by removing HSTS and `upgrade-insecure-requests`.
 
 The browser architecture does not require inline application scripts or React hydration. First-party browser behavior is emitted as a Vite module from `src/browser/`.
 
-Automated checks, source review, dry-run/staging validation, versioned source, and rollback options reduce risk but do not guarantee that defects or incidents cannot occur.
+Automated checks, source review, dry-run validation, versioned source, and rollback options reduce risk but do not guarantee that defects or incidents cannot occur.
 
 `npm run check` scans tracked files and reachable Git history for credential
 patterns without network access or token output. The bounded scanner permits

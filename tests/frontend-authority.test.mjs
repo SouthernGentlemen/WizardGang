@@ -83,7 +83,9 @@ test("TypeScript, build, Worker, and dependency authorities are explicit", async
     assert.equal(dependencies[forbidden], undefined, `${forbidden} requires a separate intentional architecture change`);
   }
 
-  assert.match(wrangler, /"main"\s*:\s*"src\/worker\/index\.ts"/, "Wrangler must use the TypeScript Worker authority");
+  assert.match(wrangler, /"main"\s*:\s*"build\/worker\.mjs"/, "Wrangler must deploy the generated entry");
+  assert.match(await readFile(resolve(root, "scripts/worker-release.mjs"), "utf8"), /from "\.\.\/src\/worker\/index\.ts"/,
+    "the generated entry must wrap the TypeScript Worker authority");
   await access(resolve(root, "src/worker/index.ts"));
   assert.deepEqual(sourceFiles.filter((path) => path.startsWith("src/worker/") && path.endsWith(".mjs")), []);
   await access(resolve(root, "tests/worker-routing.test.mjs"));

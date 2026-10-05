@@ -1,3 +1,6 @@
+import { createEdge } from "#wg-edge";
+import type { EdgeEnv, EdgeHandler, Release } from "#wg-edge";
+
 const GITHUB_ORG = "https://github.com/Wizard-Gang";
 const DEMO_ORIGIN = "https://demo.wizardgang.ai";
 
@@ -16,13 +19,9 @@ export interface AssetBinding {
   fetch(request: Request): Promise<Response>;
 }
 
-export interface WorkerEnv {
+export interface WorkerEnv extends EdgeEnv {
   ASSETS: AssetBinding;
 }
-
-type WorkerModule = {
-  fetch(request: Request, env: WorkerEnv): Promise<Response>;
-};
 
 /* Outward shortcuts only. These were never pages on this site — they are handy
    aliases for surfaces that live elsewhere, so they keep resolving.
@@ -43,32 +42,33 @@ export const PERMANENT_REDIRECTS = new Map<string, string>(
   PERMANENT_REDIRECT_ROUTES.map(({ source, destination }) => [source, destination] as const)
 );
 
-const SECURITY_HEADERS = {
-  "strict-transport-security": "max-age=31536000; includeSubDomains",
-  "x-content-type-options": "nosniff",
-  "x-frame-options": "DENY",
-  "referrer-policy": "strict-origin-when-cross-origin",
-  "permissions-policy": "camera=(), microphone=(), geolocation=()"
-} as const;
+/* The shell answers /robots.txt before the app sees it, so the site's crawl policy lives here. */
+export const ROBOTS = "User-agent: *\nAllow: /\n\nSitemap: https://wizardgang.ai/sitemap.xml\n";
 
 function permanentRedirectFor(path: string): PermanentRedirectRoute | undefined {
   return PERMANENT_REDIRECT_ROUTES.find((route) => route.source === path);
 }
 
 function redirect(target: string): Response {
+  // The shell adds the security headers to every app response.
   return new Response(null, {
     status: 308,
-    headers: { location: target, "cache-control": "public, max-age=3600", ...SECURITY_HEADERS }
+    headers: { location: target, "cache-control": "public, max-age=3600" }
   });
 }
 
-const worker = {
-  async fetch(request: Request, env: WorkerEnv): Promise<Response> {
-    const path = new URL(request.url).pathname;
-    const permanentRoute = permanentRedirectFor(path);
-    if (permanentRoute) return redirect(permanentRoute.destination);
-    return env.ASSETS.fetch(request);
-  }
-} satisfies WorkerModule;
-
-export default worker;
+/* The wg-edge shell owns the host guard, the www → apex 308, TLS, /version.json, /health.json,
+   /robots.txt, the /admin gate, security headers and errors. The site adds its outward
+   shortcuts and serves everything else from its assets. */
+export function createSiteWorker(release: Release, { logSink }: { logSink?: (line: string) => void } = {}): EdgeHandler<WorkerEnv> {
+  return createEdge<WorkerEnv>({
+    release,
+    robots: ROBOTS,
+    logSink,
+    async fetch(request, env) {
+      const permanentRoute = permanentRedirectFor(new URL(request.url).pathname);
+      if (permanentRoute) return redirect(permanentRoute.destination);
+      return env.ASSETS.fetch(request);
+    }
+  });
+}

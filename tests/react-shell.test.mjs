@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import test from "node:test";
 import {
   CANONICAL_PAGES,
@@ -79,15 +80,14 @@ test("the static shell loads only the generated TypeScript browser module withou
   );
 });
 
-test("build metadata remains visible in the React footer and version record", async () => {
+test("build metadata remains visible in the React footer and links the shell's version record", async () => {
   const html = await readDist("index.html");
-  const version = JSON.parse(await readDist("version.json"));
+  const head = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
   const footer = tagBlocks(html, "footer")[0];
   assert.ok(footer);
   const buildLink = anchors(footer.inner).find((anchor) => anchor.href === "/version.json");
   assert.ok(buildLink);
-  const buildLabel = version.commit === "development" ? version.commit : version.commit.slice(0, 12);
-  assert.equal(textContent(buildLink.inner), `Build ${buildLabel}`);
+  assert.equal(textContent(buildLink.inner), `Build ${head.slice(0, 12)}`);
 });
 
 test("the static React document has no legacy body injection seam", async () => {
