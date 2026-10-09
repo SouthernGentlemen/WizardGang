@@ -161,28 +161,27 @@ test("canonical CI hands only the exact reconciled tag to release publication", 
   assert.match(release, /^    needs: \[verify, release-tag\]$/m);
   assert.match(release, /needs\.verify\.result == 'success'/);
   assert.match(release, /needs\.release-tag\.outputs\.tag != ''/);
-  assert.match(release, /github\.event_name == 'workflow_dispatch' && github\.ref == 'refs\/heads\/main'/);
+  assert.match(release, /github\.event_name == 'workflow_dispatch' && startsWith\(github\.ref, 'refs\/tags\/v'\)/);
+  assert.doesNotMatch(release, /refs\/heads\/main'|inputs\./, "no dispatch recovers another commit's tag");
   assert.match(release, /^      contents: write$/m);
-  assert.match(release, /ref: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.release_tag \|\| needs\.release-tag\.outputs\.tag \}\}/);
+  assert.match(release, /^      RELEASE_TAG: \$\{\{ github\.event_name == 'workflow_dispatch' && github\.ref_name \|\| needs\.release-tag\.outputs\.tag \}\}$/m);
+  assert.match(release, /^          ref: \$\{\{ github\.sha \}\}$/m, "release works on the run's own commit");
   assert.match(release, /fetch-depth: 0/);
 });
 
-test("release publication reproduces and verifies the exact tagged state before publishing", () => {
+test("release verifies the exact tagged state before publishing and leaves reproduction to verify", () => {
   const workflow = readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
   const release = jobBlock(workflow, "release");
-  const install = release.indexOf("npm ci");
-  const check = release.indexOf("npm run check");
-  const identity = release.indexOf('npm run verify:release-identity -- "$RELEASE_TAG"');
+  const identity = release.indexOf('node scripts/release-identity.mjs "$RELEASE_TAG"');
   const publish = release.indexOf('gh release create "$RELEASE_TAG" --verify-tag --generate-notes --title "$RELEASE_TAG"');
-  assert.ok(install >= 0, "release must perform npm ci");
-  assert.ok(check > install, "release must run canonical check after npm ci");
-  assert.ok(identity > check, "release must verify exact tag/package/commit identity after reproduction");
+  assert.ok(identity >= 0, "release must verify exact tag/package/commit identity");
   assert.ok(publish > identity, "release publication must follow exact identity verification");
+  assert.doesNotMatch(release, /npm ci|npm run check/, "deploy-worker.yml accepts exactly one reproduction job: verify");
   assert.match(release, /node-version-file: \.node-version/);
-  assert.match(release, /npm install --global npm@12\.1\.0/);
   assert.match(release, /GH_TOKEN: \$\{\{ github\.token \}\}/);
-  assert.match(release, /git merge-base --is-ancestor "\$EXPECTED_COMMIT" refs\/remotes\/origin\/main/);
-  assert.match(release, /Recovery requires an existing published GitHub Release/);
+  assert.match(release, /test "\$\(git rev-parse HEAD\)" = "\$GITHUB_SHA"/);
+  assert.match(release, /git merge-base --is-ancestor "\$GITHUB_SHA" refs\/remotes\/origin\/main/);
+  assert.match(release, /A tag rerun requires an existing published GitHub Release/);
   assert.doesNotMatch(release, /deploy:production|wrangler deploy/);
 });
 

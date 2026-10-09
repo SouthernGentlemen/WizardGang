@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import test from "node:test";
+import { callerReproduction } from "../platform/deploy/evidence.mjs";
 
 const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
 const workflow = readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
@@ -33,6 +34,11 @@ test("npm run check runs the vendored pin and wrangler conformance checks", () =
   assert.match(packageJson.scripts.check, /(?:^|&& )npm run check:platform &&/);
 });
 
+test("the workflow dispatches only at a tag ref and takes no inputs", () => {
+  assert.match(workflow, /^  workflow_dispatch:\n(?!    )/m, "workflow_dispatch takes no inputs");
+  assert.doesNotMatch(workflow, /inputs\.|release_tag|expected_commit/, "no dispatch deploys a tag from another commit");
+});
+
 test("production deploys only through baseline's pinned deploy-worker workflow after the Release", () => {
   const release = jobBlock("release");
   const deploy = jobBlock("deploy-production");
@@ -41,18 +47,22 @@ test("production deploys only through baseline's pinned deploy-worker workflow a
   assert.match(deploy, /^    needs: \[verify, release-tag, release\]$/m);
   assert.match(deploy, /needs\.release\.result == 'success'/);
   assert.match(deploy, /needs\.release-tag\.outputs\.tag != ''/);
-  assert.match(deploy, /github\.event_name == 'workflow_dispatch' && github\.ref == 'refs\/heads\/main'/);
-  assert.match(deploy, /^    permissions:\n      contents: read$/m);
+  assert.match(deploy, /github\.event_name == 'workflow_dispatch' && startsWith\(github\.ref, 'refs\/tags\/v'\)/);
+  assert.match(deploy, /^    permissions:\n      actions: read\n      contents: read\n    #/m, "deploy-worker.yml reads this run's evidence");
 
   const pinned = BASELINE_DEPLOY.exec(deploy);
   assert.ok(pinned, "the deploy job must call deploy-worker.yml pinned to a full baseline commit");
   assert.equal(pinned[1], lock.commit, "the workflow pin and the vendored platform/ come from the same baseline commit");
   assert.match(deploy, /^    with:\n      worker: wizardgang\n/m);
-  assert.match(deploy, /^      tag: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.release_tag \|\| needs\.release-tag\.outputs\.tag \}\}$/m);
-  assert.match(deploy, /^      expected_sha: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.expected_commit \|\| github\.sha \}\}$/m);
+  assert.match(deploy, /^      tag: \$\{\{ github\.event_name == 'workflow_dispatch' && github\.ref_name \|\| needs\.release-tag\.outputs\.tag \}\}$/m);
+  assert.match(deploy, /^      expected_sha: \$\{\{ github\.sha \}\}$/m, "the run must be at the tag commit");
   assert.match(deploy, /^    secrets: inherit$/m, "a called workflow sees only the secrets its caller passes");
   assert.doesNotMatch(deploy, /^    (?:steps|runs-on|environment):/m, "the call runs nothing itself");
   assert.doesNotMatch(release, /wrangler|deploy-worker/);
+});
+
+test("deploy-worker.yml finds verify as this workflow's one reproduction job", () => {
+  assert.deepEqual(callerReproduction(workflow, lock.commit), { job: "verify", failures: [] });
 });
 
 test("only the deploy call inherits secrets, and no workflow runs wrangler deploy or reads Cloudflare credentials", () => {
